@@ -16,7 +16,7 @@ class BaseModel(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             # Generate the ID with the table name prefix
-            table_name = self._meta.db_table.lower()
+            table_name = self.__class__.__name__.lower()
             self.id = f"{table_name}_id_{cuid.cuid()}"
         super().save(*args, **kwargs)
 
