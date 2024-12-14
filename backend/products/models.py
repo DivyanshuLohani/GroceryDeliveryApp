@@ -47,6 +47,11 @@ class Product(BaseModel):
         )[:5]
         return products
 
+    def save(self, *args, **kwargs):
+        if not self.price:
+            self.price = self.mrp
+        super().save(*args, **kwargs)
+
 
 # Product Images
 class ProductImage(BaseModel):
