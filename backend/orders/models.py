@@ -29,6 +29,14 @@ class Payment(models.Model):
     payment_meta = models.JSONField(null=True, blank=True)
     transaction_id = models.CharField(max_length=255, null=True, blank=True)
 
+    assigned_partner = models.ForeignKey(
+        'users.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_partner'
+    )
+
     def __str__(self):
         return f"{self.order.id} payment - {self.payment_status}"
 

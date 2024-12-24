@@ -17,7 +17,7 @@ class BaseModel(models.Model):
         if not self.id:
             # Generate the ID with the table name prefix
             table_name = self.__class__.__name__.lower()
-            self.id = f"{table_name}_id_{cuid.cuid()}"
+            self.id = f"{table_name}_{cuid.cuid()}"
         super().save(*args, **kwargs)
 
     class Meta:
