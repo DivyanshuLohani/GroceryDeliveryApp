@@ -1,4 +1,6 @@
+import ListCategoryItem from "@/components/Category/ListCategoryItem";
 import ProductCard from "@/components/Products/ProductCard";
+import { useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -257,6 +259,10 @@ const products = [
 export default function ProductScreen() {
   const [selectedCategory, setSelectedCategory] = useState(1);
   const [displayedProducts, setDisplayedProducts] = useState(products);
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({ headerShown: true, title: "Products" });
+  }, [navigation]);
 
   useEffect(() => {
     const filteredProducts = products.filter(
@@ -266,16 +272,11 @@ export default function ProductScreen() {
   }, [selectedCategory]);
 
   const renderCategory = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryItem,
-        item.id === selectedCategory && styles.activeCategory,
-      ]}
-      onPress={() => setSelectedCategory(item.id)}
-    >
-      <Image source={item.image} style={styles.categoryImage} />
-      <Text>{item.title}</Text>
-    </TouchableOpacity>
+    <ListCategoryItem
+      item={item}
+      selectedCategory={selectedCategory}
+      setSelectedCategory={setSelectedCategory}
+    />
   );
 
   const renderProduct = ({ item }: { item: any }) => (
@@ -323,22 +324,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 0,
   },
-  categoryItem: {
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 10,
-    backgroundColor: "#f9f9f9",
-    width: 80,
-    alignItems: "center",
-  },
-  activeCategory: {
-    backgroundColor: "#e8f5e9",
-  },
-  categoryImage: {
-    width: 40,
-    height: 40,
-    resizeMode: "contain",
-  },
+
   productList: {
     // padding: 10,
     width: "75%",
