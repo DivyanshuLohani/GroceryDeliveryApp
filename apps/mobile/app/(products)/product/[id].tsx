@@ -1,16 +1,5 @@
 import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  FlatList,
-  Button,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Carousel from "react-native-reanimated-carousel"; // Add proper carousel library
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import ProductDetails from "@/components/Products/ProductDetails";
 import ProductImageCarousel from "@/components/Products/ProductImageCarousel";
