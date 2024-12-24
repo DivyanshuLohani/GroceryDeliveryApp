@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
+import { useRouter } from "expo-router";
 
 export default function CategoryItem({
   name,
@@ -10,8 +11,13 @@ export default function CategoryItem({
   name: string;
   image: any;
 }) {
+  const router = useRouter();
+
   return (
-    <TouchableOpacity style={styles.categoryItem}>
+    <TouchableOpacity
+      style={styles.categoryItem}
+      onPress={() => router.push(`/category/${name}`)}
+    >
       <ThemedView style={styles.imageContainer}>
         <Image source={image} style={styles.categoryImage} />
       </ThemedView>
