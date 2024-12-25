@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CartItem } from "@/types/cart";
+import { ASYNCSTORAGE_CART_KEY } from "@/constants/asycnStorage";
 
 interface CartState {
   items: CartItem[];
@@ -17,6 +18,9 @@ type CartAction =
   | { type: "LOAD_CART"; payload: CartItem[] };
 
 interface CartContextType extends CartState {
+  items: CartItem[];
+  total: number;
+  itemCount: number;
   addItem: (item: CartItem) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   increaseQuantity: (itemId: string) => Promise<void>;
@@ -28,7 +32,7 @@ export const CartContext = createContext<CartContextType | undefined>(
   undefined
 );
 
-const CART_STORAGE_KEY = "@cart_items";
+const CART_STORAGE_KEY = ASYNCSTORAGE_CART_KEY;
 
 const initialState: CartState = {
   items: [],
@@ -126,6 +130,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Error loading cart:", error);
+      dispatch({ type: "CLEAR_CART" });
     }
   }
 

@@ -17,6 +17,7 @@ import AuthProvider from "@/context/AuthProvider";
 import React from "react";
 import useAuth from "@/hooks/useAuth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { CartProvider } from "@/context/CartProvider";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,7 +54,9 @@ export default function RootLayout() {
     // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
     <GestureHandlerRootView>
       <AuthProvider onAuthChanged={onAuthChanged}>
-        <LayoutMain />
+        <CartProvider>
+          <LayoutMain />
+        </CartProvider>
       </AuthProvider>
     </GestureHandlerRootView>
     // </ThemeProvider>

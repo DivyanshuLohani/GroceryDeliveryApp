@@ -1,5 +1,6 @@
 import CartItem from "@/components/Cart/CartItem";
 import { Colors } from "@/constants/Colors";
+import { useCart } from "@/hooks/useCart";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -11,60 +12,21 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import EmptyCartPage from "../(cart)/checkout";
 
 const CartPage = () => {
   // Mock cart items
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Product 1",
-      price: 500,
-      quantity: 1,
-      image: require("@/assets/images/item.png"),
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 800,
-      quantity: 1,
-      image: require("@/assets/images/item.png"),
-    },
-  ]);
+  const { items, itemCount, total } = useCart();
+
   const router = useRouter();
-
-  // Function to increase quantity
-  const increaseQuantity = (id: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  // Function to decrease quantity
-  const decreaseQuantity = (id: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  // Function to calculate total price
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-  };
 
   // Function to handle checkout
   const handleCheckout = () => {
     router.push("/checkout");
     // Implement checkout logic here
   };
+
+  if (itemCount === 0) return <EmptyCartPage />;
 
   // Render individual cart item
   const renderCartItem = ({ item }: { item: any }) => <CartItem item={item} />;
@@ -73,7 +35,7 @@ const CartPage = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Your Cart</Text>
       <FlatList
-        data={cartItems}
+        data={items}
         renderItem={renderCartItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.cartList}
@@ -84,7 +46,7 @@ const CartPage = () => {
           onPress={handleCheckout}
         >
           <Text style={styles.checkoutButtonText}>Go to Checkout</Text>
-          <Text style={styles.totalText}>₹{calculateTotal()}</Text>
+          <Text style={styles.totalText}>₹{total}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -96,6 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#fff",
+    paddingVertical: 30,
   },
   header: {
     fontSize: 24,
