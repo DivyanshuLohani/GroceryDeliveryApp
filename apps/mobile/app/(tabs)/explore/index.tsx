@@ -49,7 +49,12 @@ const ProductCategories = () => {
 
       {/* Search Bar */}
       <View style={{ marginBottom: 10 }}>
-        <SearchBar />
+        <SearchBar
+          redirect={false}
+          onSearch={(q) => {
+            router.push(`/explore/${q}`);
+          }}
+        />
       </View>
 
       {/* Categories Grid */}

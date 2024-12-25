@@ -1,53 +1,88 @@
+import React, { useState } from "react";
+import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
 
 interface SearchBarProps {
   redirect?: boolean;
+  search?: string;
+  onSearch?: (query: string) => void;
+  filterEnabled?: boolean;
+  onFilterPress?: () => void;
 }
 
-export default function SearchBar({ redirect }: SearchBarProps) {
+const SearchBar = ({
+  search: s,
+  onSearch,
+  onFilterPress,
+  redirect = false,
+  filterEnabled = false,
+}: SearchBarProps) => {
+  const [search, setSearch] = useState(s ?? "");
   const router = useRouter();
-  const inputRef = useRef<TextInput>(null);
 
   return (
-    <View style={[styles.container]}>
-      <Ionicons name="search" size={20} color="#aaa" style={styles.icon} />
-      <TextInput
-        placeholder="Search here for anything you want..."
-        placeholderTextColor="#aaa"
-        ref={inputRef}
-        autoFocus={!!!redirect}
-        style={styles.input}
-        onPress={() => (redirect ? router.push("/explore") : null)}
-      />
+    <View style={styles.container}>
+      <View style={styles.searchSection}>
+        <Ionicons
+          name="search"
+          size={20}
+          color="#999"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          placeholder="Search here for anything you want..."
+          placeholderTextColor="#aaa"
+          autoFocus={!!!redirect}
+          style={styles.input}
+          value={search}
+          onChangeText={setSearch}
+          onPress={() => (redirect ? router.push("/explore") : null)}
+          onSubmitEditing={() => onSearch && onSearch(search)}
+        />
+      </View>
+      {filterEnabled && (
+        <TouchableOpacity style={styles.filterButton} onPress={onFilterPress}>
+          <Ionicons name="options-outline" size={20} color="#000" />
+        </TouchableOpacity>
+      )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 10,
-    marginHorizontal: 10,
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    paddingHorizontal: 16,
+    gap: 8,
+    backgroundColor: "#EEEEEE",
   },
-  icon: {
+  searchSection: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+  },
+  searchIcon: {
     marginRight: 8,
   },
   input: {
     flex: 1,
+    paddingVertical: 12,
     fontSize: 16,
-    color: "#333",
+    color: "#000",
+  },
+  filterButton: {
+    width: 44,
+    height: 44,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
+
+export default SearchBar;
