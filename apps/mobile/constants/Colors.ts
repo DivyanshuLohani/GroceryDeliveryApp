@@ -15,6 +15,8 @@ export const Colors = {
     tabIconDefault: "#B0B0B0", // Default tab icon
     tabIconSelected: "#FFC107", // Selected tab icon
     inputBackground: "#FFFCF2", // Light input background
+    accent: "#f0d37d", // Golden yellow for highlights
+    inputBorder: "#FFC107", // Golden yellow for input border
   },
   dark: {
     text: "#ECEDEE", // Light text for dark theme

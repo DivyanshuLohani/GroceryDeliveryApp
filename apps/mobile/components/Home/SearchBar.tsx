@@ -1,15 +1,26 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  redirect?: boolean;
+}
+
+export default function SearchBar({ redirect }: SearchBarProps) {
+  const router = useRouter();
+  const inputRef = useRef<TextInput>(null);
+
   return (
     <View style={[styles.container]}>
       <Ionicons name="search" size={20} color="#aaa" style={styles.icon} />
       <TextInput
         placeholder="Search here for anything you want..."
         placeholderTextColor="#aaa"
+        ref={inputRef}
+        autoFocus={!!!redirect}
         style={styles.input}
+        onPress={() => (redirect ? router.push("/explore") : null)}
       />
     </View>
   );
