@@ -1,43 +1,8 @@
-import ListCategoryItem from "@/components/Category/ListCategoryItem";
 import ProductCard from "@/components/Products/ProductCard";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-
-export const categories = [
-  {
-    id: 1,
-    name: "Grocery & Staples",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 2,
-    name: "Frozen Food",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 3,
-    name: "Fruits & Vegetables",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 4,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 5,
-    name: "Beverages",
-    image: require("@/assets/images/item.png"),
-  },
-];
+import React, { useEffect } from "react";
+import { View, FlatList, StyleSheet, Button } from "react-native";
 
 const products = [
   {
@@ -257,27 +222,14 @@ const products = [
 ];
 
 export default function ProductScreen() {
-  const [selectedCategory, setSelectedCategory] = useState(1);
-  const [displayedProducts, setDisplayedProducts] = useState(products);
   const navigation = useNavigation();
   useEffect(() => {
-    navigation.setOptions({ headerShown: true, title: "Products" });
+    navigation.setOptions({
+      headerShown: true,
+      title: "Products",
+      headerTitleAlign: "center",
+    });
   }, [navigation]);
-
-  useEffect(() => {
-    const filteredProducts = products.filter(
-      (product) => product.categoryId === selectedCategory
-    );
-    setDisplayedProducts(filteredProducts);
-  }, [selectedCategory]);
-
-  const renderCategory = ({ item }: { item: any }) => (
-    <ListCategoryItem
-      item={item}
-      selectedCategory={selectedCategory}
-      setSelectedCategory={setSelectedCategory}
-    />
-  );
 
   const renderProduct = ({ item }: { item: any }) => (
     <ProductCard name={item.name} price={item.price} image={item.image} />
@@ -285,19 +237,9 @@ export default function ProductScreen() {
 
   return (
     <View style={styles.wrapper}>
-      {/* Category Section */}
-      <View style={styles.categoryList}>
-        <FlatList
-          data={categories}
-          renderItem={renderCategory}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.categoryContainer}
-        />
-      </View>
-
       <View style={styles.productList}>
         <FlatList
-          data={displayedProducts}
+          data={products}
           renderItem={renderProduct}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
@@ -327,7 +269,7 @@ const styles = StyleSheet.create({
 
   productList: {
     // padding: 10,
-    width: "75%",
+    width: "100%",
     marginHorizontal: "auto",
   },
 });
