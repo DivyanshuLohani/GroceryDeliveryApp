@@ -2,17 +2,44 @@ from rest_framework import serializers
 from users.serializers import ProductReviewUserSerializer
 from .models import Category, Product, ProductImage, ProductReview
 
+import random
+
+
+def generate_desaturated_color():
+    """
+    Generate a random desaturated color in hex format.
+    """
+    # Generate a base light gray value to control brightness
+    gray = random.randint(180, 230)
+
+    # Add a small variation to the RGB channels
+    r = min(255, max(0, gray + random.randint(-20, 20)))
+    g = min(255, max(0, gray + random.randint(-20, 20)))
+    b = min(255, max(0, gray + random.randint(-20, 20)))
+
+    # Convert to hex format
+    return f'{r:02x}{g:02x}{b:02x}'
+
 
 # Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
-    subcategories = serializers.PrimaryKeyRelatedField(
-        many=True, read_only=True
-    )
+    subcategories = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
         fields = ['id', 'name', 'description',
                   'parent_category', 'subcategories', 'image']
+
+    def get_subcategories(self, obj):
+        # Use the related name for reverse relation to fetch subcategories
+        subcategories = Category.objects.filter(parent_category=obj)
+        return CategorySerializer(subcategories, many=True).data
+
+    def get_image(self, obj):
+        if obj.image:
+            return self.context['request'].build_absolute_uri(obj.image.url)
+        return f"https://placehold.co/500x500/{generate_desaturated_color()}/31343C"
 
 
 # Category Create Serializer
@@ -25,13 +52,17 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 # Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    images = serializers.StringRelatedField(many=True, read_only=True)
+    images = serializers.SerializerMethodField(read_only=True)
+
+    def get_images(self, obj):
+        images = ProductImage.objects.filter(product=obj)
+        return [self.context['request'].build_absolute_uri(image.image.url) for image in images]
 
     class Meta:
         model = Product
         fields = [
             'id', 'name', 'category', 'description', 'mrp', 'price',
-            'stock', 'image', 'is_available', 'images'
+            'stock', 'is_available', 'images'
         ]
 
 

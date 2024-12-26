@@ -2,7 +2,6 @@ import os
 import json
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from pathlib import Path
 from products.models import Category, Product, ProductImage
 
 # Path for storing product images

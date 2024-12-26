@@ -1,3 +1,6 @@
+from products.serializers import CategorySerializer
+from products.models import Category
+from rest_framework.generics import ListAPIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from .models import Category, Product, ProductReview
 from rest_framework.permissions import AllowAny
@@ -56,21 +59,25 @@ class ProductReviewCreateView(CreateAPIView):
 
 
 # View all Categories
+
+
 class CategoryListView(ListAPIView):
-    queryset = Category.objects.all()
+    queryset = Category.objects.filter(parent_category__isnull=True)
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
 
 
 # View a single Category
-class CategoryDetailView(RetrieveAPIView):
+class CategoryDetailView(ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     lookup_field = 'id'
 
     def get_queryset(self):
         cat_id = self.kwargs['id']
-        return Product.objects.filter(category__id=cat_id)
+        print(cat_id)
+        p = Product.objects.filter(category__id=cat_id)
+        return p
 
 
 # View all Products
