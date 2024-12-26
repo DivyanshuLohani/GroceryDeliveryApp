@@ -2,21 +2,28 @@ import { View, Text, Button, ScrollView, StyleSheet } from "react-native";
 import React from "react";
 
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { formatCurrency } from "@/utils/currency";
 
-const ProductDetails = () => {
+interface ProductDetailsProps {
+  name: string;
+  shortDescription: string;
+  price: number;
+}
+
+const ProductDetails = ({
+  name,
+  shortDescription,
+  price,
+}: ProductDetailsProps) => {
   return (
     <ScrollView style={styles.detailsContainer}>
       {/* Product Details */}
       <View style={styles.productDetails}>
-        <Text style={styles.productName}>Maggie</Text>
-        <Text style={styles.productDescription}>
-          MAGGI 2-minute Instant Noodles {"\n"}4.5 (325 Reviews)
-        </Text>
-        <Text style={styles.productPrice}>₹15</Text>
-        {/* <Text style={styles.productInfo}>
-                🌟 30+ people ordered this in the last 30 days!
-              </Text> */}
-        <Button title="Add to Cart" color="#FFA500" />
+        <Text style={styles.productName}>{name}</Text>
+        <Text style={styles.productDescription}>{shortDescription}</Text>
+        <Text style={styles.productPrice}>{formatCurrency(price)}</Text>
+        <Button title="Add to Cart" color={Colors.light.tint} />
       </View>
 
       {/* Extra Info Section */}

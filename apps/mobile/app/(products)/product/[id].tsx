@@ -32,7 +32,13 @@ const ProductScreen = () => {
       <ThemedView style={styles.container}>
         {/* Header Section */}
         <ProductImageCarousel images={images} />
-        <ProductDetails />
+        <ProductDetails
+          name={"Fresh Banana"}
+          shortDescription={
+            "Fresh and sweet bananas, perfect for snacks or smoothies."
+          }
+          price={100}
+        />
       </ThemedView>
     </>
   );
