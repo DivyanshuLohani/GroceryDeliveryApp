@@ -7,9 +7,9 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Ionicons } from "@expo/vector-icons";
+import CartTabIcon from "@/components/Cart/CartTabIcon";
 
 export default function TabLayout() {
-  // const colorScheme = useColorScheme();
   const colorScheme = useColorScheme();
 
   return (
@@ -60,11 +60,7 @@ export default function TabLayout() {
           options={{
             title: "Cart",
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                size={28}
-                name={focused ? "cart" : "cart-outline"}
-                color={color}
-              />
+              <CartTabIcon color={color} focused={focused} />
             ),
           }}
         />
