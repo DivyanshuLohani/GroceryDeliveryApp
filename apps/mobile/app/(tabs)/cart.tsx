@@ -29,7 +29,16 @@ const CartPage = () => {
   if (itemCount === 0) return <EmptyCartPage />;
 
   // Render individual cart item
-  const renderCartItem = ({ item }: { item: any }) => <CartItem item={item} />;
+  const renderCartItem = ({ item }: { item: any }) => (
+    <CartItem
+      id={item.id}
+      name={item.name}
+      weight={"500g"}
+      price={item.price}
+      image={item.image}
+      quantity={item.quantity}
+    />
+  );
 
   return (
     <View style={styles.container}>

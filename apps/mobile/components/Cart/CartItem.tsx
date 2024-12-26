@@ -1,88 +1,178 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React from "react";
-import { Colors } from "@/constants/Colors";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Pressable,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useCart } from "@/hooks/useCart";
 
 interface CartItemProps {
-  item: any;
+  id: string;
+  name: string;
+  weight: string;
+  price: number;
+  image: any;
+  quantity: number;
 }
 
-const CartItem = ({ item }: CartItemProps) => {
+export default function CartItem({
+  id,
+  name,
+  weight,
+  price,
+  image,
+  quantity,
+}: CartItemProps) {
+  const { increaseQuantity, decreaseQuantity, removeItem } = useCart();
+
+  const handleIncrement = () => {
+    increaseQuantity(id);
+  };
+
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      decreaseQuantity(id);
+    }
+  };
+
   return (
-    <View style={styles.cartItem}>
-      <Image source={item.image} style={styles.cartImage} />
-      <View style={styles.cartDetails}>
-        <Text style={styles.cartName}>{item.name}</Text>
-        <Text style={styles.cartPrice}>₹{item.price}</Text>
-        <View style={styles.quantityControls}>
-          <TouchableOpacity
-            // onPress={() => decreaseQuantity(item.id)}
-            style={styles.quantityButton}
-          >
-            <Text style={styles.quantityText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.quantityNumber}>{item.quantity}</Text>
-          <TouchableOpacity
-            // onPress={() => increaseQuantity(item.id)}
-            style={styles.quantityButton}
-          >
-            <Text style={[styles.quantityText, { color: Colors.light.tint }]}>
-              +
-            </Text>
-          </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.contentContainer}>
+        <View style={styles.productInfo}>
+          <Image source={image} style={styles.image} />
+          <View style={styles.textContainer}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.weight}>{weight}</Text>
+          </View>
+        </View>
+
+        <View style={styles.actionContainer}>
+          <View style={styles.quantityControls}>
+            <TouchableOpacity
+              onPress={handleDecrement}
+              style={styles.quantityButton}
+            >
+              <Text style={styles.quantityButtonText}>−</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.quantity}>{quantity}</Text>
+
+            <TouchableOpacity
+              onPress={handleIncrement}
+              style={[styles.quantityButton, styles.incrementButton]}
+            >
+              <Text style={[styles.quantityButtonText, styles.greenText]}>
+                +
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.price}>₹{(price * quantity).toFixed(2)}</Text>
         </View>
       </View>
+
+      <Pressable
+        onPress={() => {
+          removeItem(id);
+        }}
+        style={styles.removeButton}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <Ionicons name="close" size={24} color="#999" />
+      </Pressable>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  cartItem: {
-    flexDirection: "row",
-    marginBottom: 16,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 8,
-    padding: 12,
-  },
-  cartImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-  },
-  cartDetails: {
-    flex: 1,
-    marginLeft: 16,
-    justifyContent: "space-between",
-  },
-  cartName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  cartPrice: {
-    fontSize: 14,
-    color: "#888",
-  },
-  quantityControls: {
-    marginTop: 10,
+  container: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "white",
+    padding: 16,
+    marginBottom: 8,
+    borderRadius: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  productInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  image: {
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
+  },
+  textContainer: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  weight: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+  },
+  actionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  quantityControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    padding: 4,
   },
   quantityButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 6,
   },
-  quantityText: {
-    fontSize: 18,
-    fontWeight: "bold",
+  incrementButton: {
+    backgroundColor: "#e8f5e9",
   },
-  quantityNumber: {
-    marginHorizontal: 12,
+  quantityButtonText: {
+    fontSize: 20,
+    color: "#666",
+  },
+  greenText: {
+    color: "#4CAF50",
+  },
+  quantity: {
     fontSize: 16,
+    marginHorizontal: 16,
+    color: "#000",
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  removeButton: {
+    padding: 8,
+    marginLeft: 12,
   },
 });
-
-export default CartItem;
