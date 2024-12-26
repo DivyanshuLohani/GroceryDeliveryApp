@@ -3,15 +3,17 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductCardProps {
   name: string;
-  price: string;
+  price: number;
   image: any; // Replace `any` with the type for your images if using a stricter type system
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ name, price, image }) => {
   const router = useRouter();
+  const { addItem } = useCart();
   return (
     <TouchableOpacity
       onPress={() => router.push("/product/1")}
@@ -20,7 +22,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, price, image }) => {
       <Image source={image} style={styles.image} />
       <ThemedText style={styles.name}>{name}</ThemedText>
       <ThemedText style={styles.price}>{price}</ThemedText>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => addItem({ id: "1", name, price, quantity: 1, image })}
+      >
         <ThemedText style={styles.buttonText}>Add to Cart</ThemedText>
       </TouchableOpacity>
     </TouchableOpacity>
