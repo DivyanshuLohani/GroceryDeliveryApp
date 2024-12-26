@@ -23,6 +23,9 @@ class Category(BaseModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        app_label = 'products'
+
 
 # Product model
 class Product(BaseModel):
@@ -40,7 +43,7 @@ class Product(BaseModel):
         return self.name
 
     def get_related_products(self):
-        products = self.objects.filter(
+        products = Product.objects.filter(
             category=self.category
         ).exclude(
             id=self.id
@@ -51,6 +54,9 @@ class Product(BaseModel):
         if not self.price:
             self.price = self.mrp
         super().save(*args, **kwargs)
+
+    class Meta:
+        app_label = 'products'
 
 
 # Product Images
@@ -67,10 +73,11 @@ class ProductImage(BaseModel):
     class Meta:
         unique_together = ('product', 'priority')
         ordering = ['priority', 'uploaded_at']
+        app_label = 'products'
 
     def save(self, *args, **kwargs):
         if not self.id:
-            last_priority = (self.objects.filter(
+            last_priority = (ProductImage.objects.filter(
                 product=self.product
             ).aggregate(
                 max_priority=models.Max('priority'))['max_priority'] or 0
@@ -81,6 +88,8 @@ class ProductImage(BaseModel):
 
 
 class ProductReview(BaseModel):
+    class Meta:
+        app_label = 'products'
 
     product = models.ForeignKey(
         Product, related_name="reviews", on_delete=models.CASCADE)
