@@ -37,7 +37,7 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
         return False
 
 
-class CartView(generics.CreateAPIView, generics.ListAPIView):
+class CartView(generics.CreateAPIView, generics.ListAPIView, generics.DestroyAPIView):
     queryset = CartItem.objects.all()
     lookup_field = 'id'
 
@@ -61,6 +61,10 @@ class CartView(generics.CreateAPIView, generics.ListAPIView):
                                )
         headers = self.get_success_headers(s.data)
         return Response(s.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def destroy(self, request, *args, **kwargs):
+        CartItem.objects.filter(user=request.user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ModifyCartItemView(generics.UpdateAPIView, generics.DestroyAPIView):

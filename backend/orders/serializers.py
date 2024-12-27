@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from users.models import Address
+from products.models import Product
 from users.serializers import AddressSerializer, UserSerializer
 from products.serializers import ProductSerializer
 from .models import CartItem, Order, OrderItem, Payment
@@ -30,15 +32,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 # OrderItem Create Serializer
-class OrderItemCreateSerializer(serializers.ModelSerializer):
-    price = serializers.SerializerMethodField()
-
-    def get_price(self, obj):
-        return obj.product.price * obj.quantity
+class OrderItemCreateSerializer(serializers.Serializer):
+    # price = serializers.FloatField()
+    product = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all())
+    quantity = serializers.IntegerField()
 
     class Meta:
         model = OrderItem
-        fields = ['order', 'product', 'quantity', 'price']
+        fields = ['product', 'quantity', 'price']
 
 
 # Order Serializer
@@ -69,15 +71,22 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items')
-        order = Order.objects.create(**validated_data)
+        user = self.context['request'].user
+
+        # TODO: Remove this
+        address = Address.objects.first()
+
+        order = Order.objects.create(
+            **validated_data, user=user, address=address)
         for item_data in order_items_data:
             OrderItem.objects.create(order=order, **item_data)
         return order
 
     class Meta:
         model = Order
-        fields = ['user', 'status', 'address',
-                  'payment', 'order_items', 'created_at']
+        fields = ['status',
+                  #   'address', 'payment',
+                  'order_items', 'created_at']
 
 
 class CreateCartItemSerializer(serializers.ModelSerializer):

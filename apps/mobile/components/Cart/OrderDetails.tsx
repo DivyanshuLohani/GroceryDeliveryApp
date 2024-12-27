@@ -1,17 +1,35 @@
-import { View, Text, StyleSheet, Button } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { formatCurrency } from "@/utils/currency";
 import { useCart } from "@/hooks/useCart";
 import { Colors } from "@/constants/Colors";
+import { api } from "@/api";
 
 interface OrderDetailsProps {
   onClose: () => void;
 }
 
 const OrderDetails = ({ onClose }: OrderDetailsProps) => {
-  const { total } = useCart();
+  const { total, items, clearCart } = useCart();
+
+  const handleOrder = async () => {
+    try {
+      console.log("placing order");
+      await api.post("/orders/order/", {
+        order_items: items.map((item) => ({
+          product: item.product.id,
+          quantity: item.quantity,
+        })),
+      });
+      Alert.alert("Order placed successfully");
+      await clearCart();
+    } catch {
+      console.log("error placing order");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -49,6 +67,7 @@ const OrderDetails = ({ onClose }: OrderDetailsProps) => {
           marginTop: 20,
           width: 380,
         }}
+        onPress={handleOrder}
       >
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
           Place Order

@@ -22,6 +22,11 @@ export async function getCart() {
   return response.data.results;
 }
 
+export async function clearCart() {
+  const response = await api.delete("/orders/cart/");
+  return response.data;
+}
+
 export async function removeItemFromCart(id: string) {
   const response = await api.delete(`/orders/cart/${id}/`);
   console.log(response.data);

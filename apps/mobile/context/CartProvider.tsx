@@ -2,7 +2,12 @@ import React, { createContext, useContext, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CartItem } from "@/types/cart";
 import { ASYNCSTORAGE_CART_KEY } from "@/constants/asycnStorage";
-import { addItemToCart, getCart, removeItemFromCart } from "@/api";
+import {
+  addItemToCart,
+  getCart,
+  removeItemFromCart,
+  clearCart as clearServerCart,
+} from "@/api";
 import useAuth from "@/hooks/useAuth";
 
 interface CartState {
@@ -135,17 +140,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     loadCartFromServer();
   }, [auth]);
 
-  async function saveCartToStorage(items: CartItem[]) {
-    try {
-      await AsyncStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    } catch (error) {
-      console.error("Error saving cart:", error);
-    }
-  }
-
   const addItem = async (item: CartItem) => {
     dispatch({ type: "ADD_ITEM", payload: item });
-    await saveCartToStorage([...state.items, item]);
     await addItemToCart(item.product.id, item.quantity);
   };
 
@@ -166,7 +162,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = async () => {
     dispatch({ type: "CLEAR_CART" });
-    await AsyncStorage.removeItem(CART_STORAGE_KEY);
+    await clearServerCart();
   };
 
   return (
