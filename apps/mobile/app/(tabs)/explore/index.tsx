@@ -2,47 +2,25 @@ import React from "react";
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   Image,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import SearchBar from "@/components/Home/SearchBar";
 import { useRouter } from "expo-router";
-
-export const categories = [
-  {
-    id: 1,
-    name: "Grocery & Staples",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 2,
-    name: "Frozen Food",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 3,
-    name: "Fruits & Vegetables",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 4,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 5,
-    name: "Beverages",
-    image: require("@/assets/images/item.png"),
-  },
-];
+import useListFetch from "@/hooks/useListFetch";
+import { TCategory } from "@/types/category";
+import Loading from "@/components/Loading";
 
 const ProductCategories = () => {
   const router = useRouter();
+  const {
+    data: categories,
+    loading,
+    error,
+  } = useListFetch<TCategory>("/products/categories/");
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Find Products</Text>
@@ -56,29 +34,25 @@ const ProductCategories = () => {
           }}
         />
       </View>
-
+      {loading && <Loading />}
       {/* Categories Grid */}
       <ScrollView contentContainerStyle={styles.categoriesContainer}>
-        {categories.map((category) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/category/${category.id}`)}
-            key={category.id}
-            style={[
-              styles.categoryCard,
-              // {
-              //   backgroundColor: category.backgroundColor,
-              //   borderColor: category.borderColor,
-              // },
-            ]}
-          >
-            <Image
-              source={category.image}
-              style={styles.categoryImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.categoryTitle}>{category.name}</Text>
-          </TouchableOpacity>
-        ))}
+        {categories.map((parent) =>
+          parent.subcategories.map((category) => (
+            <TouchableOpacity
+              onPress={() => router.push(`/category/${category.id}`)}
+              key={category.id}
+              style={[styles.categoryCard, category.colors]}
+            >
+              <Image
+                source={{ uri: category.image, height: 100, width: 100 }}
+                style={styles.categoryImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.categoryTitle}>{category.name}</Text>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,8 +1,8 @@
 import { api } from "@/api";
 import { useState, useEffect, useCallback } from "react";
 
-const useListFetch = (url: string) => {
-  const [data, setData] = useState<any[]>([]);
+const useListFetch = <T>(url: string) => {
+  const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(true);

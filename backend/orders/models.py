@@ -90,6 +90,7 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+        ordering = ['-id']
 
     def __str__(self):
         return f"{self.user.username}'s cart - {self.product.name}"

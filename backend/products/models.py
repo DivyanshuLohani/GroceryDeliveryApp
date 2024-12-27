@@ -25,6 +25,7 @@ class Category(BaseModel):
 
     class Meta:
         app_label = 'products'
+        ordering = ['name']
 
 
 # Product model

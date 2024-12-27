@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from server.utils import get_colors_from_image
 from users.serializers import ProductReviewUserSerializer
 from .models import Category, Product, ProductImage, ProductReview
 
@@ -26,6 +27,11 @@ class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     # products = serializers.SerializerMethodField()
+    # colors = serializers.SerializerMethodField()
+
+    # def get_colors(self, obj):
+    #     print(obj.name)
+    #     return get_colors_from_image(self.get_image(obj))
 
     class Meta:
         model = Category

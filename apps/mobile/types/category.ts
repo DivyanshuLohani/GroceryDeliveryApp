@@ -5,4 +5,8 @@ export type TCategory = {
   parent_category: string;
   subcategories: TCategory[];
   image: string;
+  colors?: {
+    backgroundColor: string;
+    borderColor: string;
+  };
 };

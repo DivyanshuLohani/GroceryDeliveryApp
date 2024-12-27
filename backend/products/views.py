@@ -76,9 +76,7 @@ class CategoryDetailView(ListAPIView):
 
     def get_queryset(self):
         cat_id = self.kwargs['id']
-        print(cat_id)
-        p = Product.objects.filter(category__id=cat_id)
-        return p
+        return Product.objects.filter(category__id=cat_id)
 
 
 # View all Products
