@@ -4,6 +4,7 @@ from products.models import Product
 from users.serializers import AddressSerializer, UserSerializer
 from products.serializers import ProductSerializer
 from .models import CartItem, Order, OrderItem, Payment
+from decimal import Decimal
 
 
 # Payment Serializer
@@ -28,7 +29,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['id', 'product', 'quantity', 'price']
+        fields = ['id', 'product', 'quantity']
 
 
 # OrderItem Create Serializer
@@ -40,12 +41,11 @@ class OrderItemCreateSerializer(serializers.Serializer):
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'quantity', 'price']
+        fields = ['product', 'quantity']
 
 
 # Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
     address = AddressSerializer(read_only=True)
     payment = PaymentSerializer(read_only=True)
     order_items = OrderItemSerializer(many=True, read_only=True)
@@ -55,11 +55,12 @@ class OrderSerializer(serializers.ModelSerializer):
         total = 0
         for item in obj.order_items.all():
             total += item.product.price * item.quantity
-        return total - obj.discount
+
+        return total - Decimal(obj.discount)
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'total_amount', 'status',
+        fields = ['id', 'total_amount', 'status',
                   'created_at', 'address', 'payment', 'order_items']
 
 
