@@ -2,7 +2,7 @@ import CartItem from "@/components/Cart/CartItem";
 import { Colors } from "@/constants/Colors";
 import { useCart } from "@/hooks/useCart";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   FlatList,
@@ -14,18 +14,12 @@ import {
 } from "react-native";
 import EmptyCartPage from "../(cart)/checkout";
 import { CartItem as TCartItem } from "@/types/cart";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import CheckoutSheet from "@/components/Cart/CheckoutSheet";
 
 const CartPage = () => {
   // Mock cart items
   const { items, itemCount, total } = useCart();
-
-  const router = useRouter();
-
-  // Function to handle checkout
-  const handleCheckout = () => {
-    router.push("/checkout");
-    // Implement checkout logic here
-  };
 
   if (itemCount === 0) return <EmptyCartPage />;
 
@@ -34,7 +28,6 @@ const CartPage = () => {
     <CartItem
       id={item.product.id}
       name={item.product.name}
-      weight={"500g"}
       price={item.product.price}
       image={item.product.images[0]}
       quantity={item.quantity}
@@ -42,23 +35,17 @@ const CartPage = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Your Cart</Text>
-      <FlatList
-        data={items}
-        renderItem={renderCartItem}
-        keyExtractor={(item) => item.product.id}
-        contentContainerStyle={styles.cartList}
-      />
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.checkoutButton}
-          onPress={handleCheckout}
-        >
-          <Text style={styles.checkoutButtonText}>Go to Checkout</Text>
-          <Text style={styles.totalText}>₹{total}</Text>
-        </TouchableOpacity>
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.header}>Your Cart</Text>
+        <FlatList
+          data={items}
+          renderItem={renderCartItem}
+          keyExtractor={(item) => item.product.id}
+          contentContainerStyle={styles.cartList}
+        />
       </View>
+      <CheckoutSheet />
     </View>
   );
 };
@@ -77,40 +64,6 @@ const styles = StyleSheet.create({
   },
   cartList: {
     paddingBottom: 80,
-  },
-
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
-  },
-  totalText: {
-    right: 16,
-    fontSize: 16,
-    backgroundColor: Colors.light.accent,
-    padding: 6,
-    borderRadius: 10,
-  },
-  checkoutButton: {
-    backgroundColor: Colors.light.tint,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 25,
-    flex: 1,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    elevation: 2,
-  },
-  checkoutButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    alignSelf: "center",
-    fontWeight: "bold",
   },
 });
 

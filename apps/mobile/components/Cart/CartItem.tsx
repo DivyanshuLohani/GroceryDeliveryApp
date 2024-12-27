@@ -14,7 +14,6 @@ import { formatCurrency } from "@/utils/currency";
 interface CartItemProps {
   id: string;
   name: string;
-  weight: string;
   price: string;
   image: string;
   quantity: number;
@@ -23,7 +22,7 @@ interface CartItemProps {
 export default function CartItem({
   id,
   name,
-  weight,
+
   price,
   image,
   quantity,
@@ -50,7 +49,6 @@ export default function CartItem({
           />
           <View style={styles.textContainer}>
             <Text style={styles.name}>{name}</Text>
-            <Text style={styles.weight}>{weight}</Text>
           </View>
         </View>
 
