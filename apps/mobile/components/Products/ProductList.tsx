@@ -1,14 +1,15 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import React from "react";
 import ProductCard from "./ProductCard";
+import { TProduct } from "@/types/product";
 
 interface ProductListProps {
-  products: any[];
+  products: TProduct[];
 }
 
 const ProductList = ({ products }: ProductListProps) => {
-  const renderProduct = ({ item }: { item: any }) => (
-    <ProductCard name={item.name} price={item.price} image={item.image} />
+  const renderProduct = ({ item }: { item: TProduct }) => (
+    <ProductCard product={item} />
   );
 
   return (

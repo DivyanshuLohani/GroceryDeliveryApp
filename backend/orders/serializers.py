@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.serializers import AddressSerializer, UserSerializer
 from products.serializers import ProductSerializer
-from .models import Order, OrderItem, Payment
+from .models import CartItem, Order, OrderItem, Payment
 
 
 # Payment Serializer
@@ -78,3 +78,39 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['user', 'status', 'address',
                   'payment', 'order_items', 'created_at']
+
+
+class CreateCartItemSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField()
+
+    class Meta:
+        model = CartItem
+        fields = ['product', 'quantity']
+
+    def create(self, validated_data):
+        existing = CartItem.objects.filter(
+            user=validated_data['user'],
+            product=validated_data['product']
+        ).first()
+        if existing:
+            existing.quantity += validated_data['quantity']
+            existing.save()
+            return existing
+        return super().create(validated_data)
+
+
+class RemoveCartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = ['product']
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = serializers.SerializerMethodField(read_only=True)
+
+    def get_product(self, obj):
+        return ProductSerializer(obj.product, context=self.context).data
+
+    class Meta:
+        model = CartItem
+        fields = ['id', 'product', 'quantity']

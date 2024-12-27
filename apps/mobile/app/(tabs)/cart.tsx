@@ -13,6 +13,7 @@ import {
   Alert,
 } from "react-native";
 import EmptyCartPage from "../(cart)/checkout";
+import { CartItem as TCartItem } from "@/types/cart";
 
 const CartPage = () => {
   // Mock cart items
@@ -29,13 +30,13 @@ const CartPage = () => {
   if (itemCount === 0) return <EmptyCartPage />;
 
   // Render individual cart item
-  const renderCartItem = ({ item }: { item: any }) => (
+  const renderCartItem = ({ item }: { item: TCartItem }) => (
     <CartItem
-      id={item.id}
-      name={item.name}
+      id={item.product.id}
+      name={item.product.name}
       weight={"500g"}
-      price={item.price}
-      image={item.image}
+      price={item.product.price}
+      image={item.product.images[0]}
       quantity={item.quantity}
     />
   );
@@ -46,7 +47,7 @@ const CartPage = () => {
       <FlatList
         data={items}
         renderItem={renderCartItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.product.id}
         contentContainerStyle={styles.cartList}
       />
       <View style={styles.footer}>

@@ -1,8 +1,6 @@
+import { TProduct } from "./product";
+
 export interface CartItem {
-  id: string;
-  name: string;
-  price: number;
+  product: TProduct;
   quantity: number;
-  image: string;
-  // Add any other product properties you need
 }

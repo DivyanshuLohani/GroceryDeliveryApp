@@ -25,6 +25,7 @@ def generate_desaturated_color():
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    # products = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
@@ -39,7 +40,7 @@ class CategorySerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         if obj.image:
             return self.context['request'].build_absolute_uri(obj.image.url)
-        return f"https://placehold.co/500x500/{generate_desaturated_color()}/31343C"
+        return f"https://picsum.photos/seed/{generate_desaturated_color()}/500/500"
 
 
 # Category Create Serializer
@@ -49,6 +50,18 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         fields = ['name', 'description', 'parent_category', 'image']
 
 
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
+    def get_products(self, obj):
+        products = Product.objects.filter(category=obj)
+        return ProductSerializer(products, many=True, context=self.context).data
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'description', 'products', ]
+
+
 # Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
@@ -56,7 +69,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         images = ProductImage.objects.filter(product=obj)
-        return [self.context['request'].build_absolute_uri(image.image.url) for image in images]
+        return [self.context['request'].build_absolute_uri(
+            image.image.url.replace("/uploads", "", 1)
+        ) for image in images]
 
     class Meta:
         model = Product

@@ -2,6 +2,8 @@ import React, { createContext, useContext, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CartItem } from "@/types/cart";
 import { ASYNCSTORAGE_CART_KEY } from "@/constants/asycnStorage";
+import { addItemToCart, getCart, removeItemFromCart } from "@/api";
+import useAuth from "@/hooks/useAuth";
 
 interface CartState {
   items: CartItem[];
@@ -46,7 +48,7 @@ function calculateTotals(items: CartItem[]): {
 } {
   return items.reduce(
     (acc, item) => ({
-      total: acc.total + item.price * item.quantity,
+      total: acc.total + Number(item.product.price) * item.quantity,
       itemCount: acc.itemCount + item.quantity,
     }),
     { total: 0, itemCount: 0 }
@@ -57,7 +59,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
       const existingItemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
+        (item) => item.product.id === action.payload.product.id
       );
 
       let newItems;
@@ -76,14 +78,16 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case "REMOVE_ITEM": {
-      const newItems = state.items.filter((item) => item.id !== action.payload);
+      const newItems = state.items.filter(
+        (item) => item.product.id !== action.payload
+      );
       const { total, itemCount } = calculateTotals(newItems);
       return { items: newItems, total, itemCount };
     }
 
     case "INCREASE_QUANTITY": {
       const newItems = state.items.map((item) =>
-        item.id === action.payload
+        item.product.id === action.payload
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
@@ -93,7 +97,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
     case "DECREASE_QUANTITY": {
       const newItems = state.items.map((item) =>
-        item.id === action.payload && item.quantity > 1
+        item.product.id === action.payload && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
           : item
       );
@@ -116,23 +120,20 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const { auth } = useAuth();
 
-  // Load cart from storage when app starts
   React.useEffect(() => {
-    loadCartFromStorage();
-  }, []);
-
-  async function loadCartFromStorage() {
-    try {
-      const storedCart = await AsyncStorage.getItem(CART_STORAGE_KEY);
-      if (storedCart) {
-        dispatch({ type: "LOAD_CART", payload: JSON.parse(storedCart) });
+    const loadCartFromServer = async () => {
+      try {
+        const data = await getCart();
+        dispatch({ type: "LOAD_CART", payload: data });
+      } catch (error) {
+        console.error("Error loading cart:", error);
       }
-    } catch (error) {
-      console.error("Error loading cart:", error);
-      dispatch({ type: "CLEAR_CART" });
-    }
-  }
+    };
+    if (!auth) return;
+    loadCartFromServer();
+  }, [auth]);
 
   async function saveCartToStorage(items: CartItem[]) {
     try {
@@ -145,31 +146,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addItem = async (item: CartItem) => {
     dispatch({ type: "ADD_ITEM", payload: item });
     await saveCartToStorage([...state.items, item]);
+    await addItemToCart(item.product.id, item.quantity);
   };
 
   const removeItem = async (itemId: string) => {
     dispatch({ type: "REMOVE_ITEM", payload: itemId });
-    await saveCartToStorage(state.items.filter((item) => item.id !== itemId));
+    await removeItemFromCart(itemId);
   };
 
   const increaseQuantity = async (itemId: string) => {
     dispatch({ type: "INCREASE_QUANTITY", payload: itemId });
-    await saveCartToStorage(
-      state.items.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    await addItemToCart(itemId, 1);
   };
 
   const decreaseQuantity = async (itemId: string) => {
     dispatch({ type: "DECREASE_QUANTITY", payload: itemId });
-    await saveCartToStorage(
-      state.items.map((item) =>
-        item.id === itemId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
+    await addItemToCart(itemId, -1);
   };
 
   const clearCart = async () => {

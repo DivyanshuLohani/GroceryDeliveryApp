@@ -1,70 +1,23 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import CategoryItem from "./CategoryItem";
-import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
-import { ScrollView } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-
-const categories = [
-  {
-    id: 1,
-    name: "Grocery & Staples",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 2,
-    name: "Frozen Food",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 3,
-    name: "Fruits & Vegetables",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 4,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 5,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 6,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 7,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 8,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-  {
-    id: 9,
-    name: "Personal Care",
-    image: require("@/assets/images/item.png"),
-  },
-];
+import { TCategory } from "@/types/category";
 
 interface CategoryGridProps {
   title: string;
   seeAllText: string | null;
   seeAllLink: any | null;
+  categories: TCategory[];
 }
 
 const CategoryGrid = ({
   title,
   seeAllText = null,
   seeAllLink = null,
+  categories,
 }: CategoryGridProps) => {
   const router = useRouter();
   return (
@@ -79,11 +32,7 @@ const CategoryGrid = ({
       </View>
       <View style={styles.grid}>
         {categories.map((category) => (
-          <CategoryItem
-            key={category.id}
-            name={category.name}
-            image={category.image}
-          />
+          <CategoryItem key={category.id} {...category} />
         ))}
       </View>
     </View>
@@ -110,7 +59,7 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    gap: 5,
   },
 });
 

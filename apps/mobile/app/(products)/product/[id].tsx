@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import ProductDetails from "@/components/Products/ProductDetails";
 import ProductImageCarousel from "@/components/Products/ProductImageCarousel";
-import { Stack, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import Loading from "@/components/Loading";
+import useFetch from "@/hooks/useFetch";
+import { TProduct } from "@/types/product";
+import { formatCurrency } from "@/utils/currency";
 
 const ProductScreen = () => {
-  const [loading, setLoading] = useState(true);
-  const images = [
-    require("@/assets/images/item.png"),
-    require("@/assets/images/item.png"),
-    require("@/assets/images/Banner.png"),
-  ];
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const {
+    data: product,
+    loading,
+    error,
+  } = useFetch<TProduct>(`/products/${id}/`);
   const navigation = useNavigation();
 
-  // TODO: ADD DATA
   useEffect(() => {
-    setTimeout(() => {
-      navigation.setOptions({ headerShown: true, title: "Product Details" });
-      setLoading(false);
-    }, 1000);
-  }, [navigation]);
+    if (loading || !product) return;
+    navigation.setOptions({ headerShown: true, title: product.name });
+  }, [navigation, loading, product]);
 
-  if (loading) {
+  if (loading || !product) {
     return <Loading />;
   }
 
@@ -31,14 +31,8 @@ const ProductScreen = () => {
     <>
       <ThemedView style={styles.container}>
         {/* Header Section */}
-        <ProductImageCarousel images={images} />
-        <ProductDetails
-          name={"Fresh Banana"}
-          shortDescription={
-            "Fresh and sweet bananas, perfect for snacks or smoothies."
-          }
-          price={100}
-        />
+        <ProductImageCarousel images={product.images} />
+        <ProductDetails product={product} />
       </ThemedView>
     </>
   );

@@ -8,3 +8,22 @@ export const BASE_URL = "http://192.168.29.63:8000";
 export const api = a.create({
   baseURL: BASE_URL,
 });
+
+export async function addItemToCart(id: string, quantity: number) {
+  const response = await api.post("/orders/cart/", {
+    product: id,
+    quantity,
+  });
+  return response.data;
+}
+
+export async function getCart() {
+  const response = await api.get("/orders/cart/");
+  return response.data.results;
+}
+
+export async function removeItemFromCart(id: string) {
+  const response = await api.delete(`/orders/cart/${id}/`);
+  console.log(response.data);
+  return response.data;
+}

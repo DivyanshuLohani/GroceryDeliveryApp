@@ -116,6 +116,8 @@ export const AuthProvider = ({
         if (parsedUserInfo) {
           setAuth(parsedAuth);
           setUserInfo(parsedUserInfo);
+          // Set headers to have the access token when request is made
+          api.defaults.headers.common.Authorization = `Bearer ${parsedAuth.access}`;
         }
       }
     } catch (e) {

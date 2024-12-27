@@ -4,26 +4,32 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { formatCurrency } from "@/utils/currency";
+import { TProduct } from "@/types/product";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductDetailsProps {
-  name: string;
-  shortDescription: string;
-  price: number;
+  product: TProduct;
 }
 
-const ProductDetails = ({
-  name,
-  shortDescription,
-  price,
-}: ProductDetailsProps) => {
+const ProductDetails = ({ product }: ProductDetailsProps) => {
+  const { addItem } = useCart();
   return (
     <ScrollView style={styles.detailsContainer}>
       {/* Product Details */}
       <View style={styles.productDetails}>
-        <Text style={styles.productName}>{name}</Text>
-        <Text style={styles.productDescription}>{shortDescription}</Text>
-        <Text style={styles.productPrice}>{formatCurrency(price)}</Text>
-        <Button title="Add to Cart" color={Colors.light.tint} />
+        <Text style={styles.productName}>{product.name}</Text>
+        <Text style={styles.productDescription}>{product.description}</Text>
+        <Text style={styles.productPrice}>{formatCurrency(product.price)}</Text>
+        <Button
+          title="Add to Cart"
+          color={Colors.light.tint}
+          onPress={() =>
+            addItem({
+              product,
+              quantity: 1,
+            })
+          }
+        />
       </View>
 
       {/* Extra Info Section */}

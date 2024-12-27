@@ -1,7 +1,9 @@
+import Loading from "@/components/Loading";
 import ProductCard from "@/components/Products/ProductCard";
 import ProductList from "@/components/Products/ProductList";
+import useListFetch from "@/hooks/useListFetch";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect } from "react";
 import { View, FlatList, StyleSheet, Button } from "react-native";
 
@@ -9,35 +11,35 @@ export const products = [
   {
     id: 1,
     name: "Rice 5kg",
-    price: "₹200",
+    price: 200,
     image: require("@/assets/images/item.png"),
     categoryId: 1,
   },
   {
     id: 2,
     name: "Wheat Flour 10kg",
-    price: "₹300",
+    price: 300,
     image: require("@/assets/images/item.png"),
     categoryId: 1,
   },
   {
     id: 3,
     name: "Sugar 2kg",
-    price: "₹50",
+    price: 50,
     image: require("@/assets/images/item.png"),
     categoryId: 1,
   },
   {
     id: 4,
     name: "Salt 1kg",
-    price: "₹20",
+    price: 20,
     image: require("@/assets/images/item.png"),
     categoryId: 1,
   },
   {
     id: 5,
     name: "Tea Leaves 500g",
-    price: "₹150",
+    price: 150,
     image: require("@/assets/images/item.png"),
     categoryId: 1,
   },
@@ -45,35 +47,35 @@ export const products = [
   {
     id: 6,
     name: "Frozen Peas 1kg",
-    price: "₹80",
+    price: 80,
     image: require("@/assets/images/item.png"),
     categoryId: 2,
   },
   {
     id: 7,
     name: "Frozen Pizza",
-    price: "₹120",
+    price: 120,
     image: require("@/assets/images/item.png"),
     categoryId: 2,
   },
   {
     id: 8,
     name: "Frozen Chicken Nuggets",
-    price: "₹200",
+    price: 200,
     image: require("@/assets/images/item.png"),
     categoryId: 2,
   },
   {
     id: 9,
     name: "Frozen Fish Fillet",
-    price: "₹250",
+    price: 250,
     image: require("@/assets/images/item.png"),
     categoryId: 2,
   },
   {
     id: 10,
     name: "Frozen French Fries",
-    price: "₹100",
+    price: 100,
     image: require("@/assets/images/item.png"),
     categoryId: 2,
   },
@@ -81,35 +83,35 @@ export const products = [
   {
     id: 11,
     name: "Bananas - 1 Dozen",
-    price: "₹60",
+    price: 60,
     image: require("@/assets/images/item.png"),
     categoryId: 3,
   },
   {
     id: 12,
     name: "Apples - 1kg",
-    price: "₹150",
+    price: 150,
     image: require("@/assets/images/item.png"),
     categoryId: 3,
   },
   {
     id: 13,
     name: "Tomatoes - 1kg",
-    price: "₹40",
+    price: 40,
     image: require("@/assets/images/item.png"),
     categoryId: 3,
   },
   {
     id: 14,
     name: "Potatoes - 2kg",
-    price: "₹35",
+    price: 35,
     image: require("@/assets/images/item.png"),
     categoryId: 3,
   },
   {
     id: 15,
     name: "Onions - 1kg",
-    price: "₹30",
+    price: 30,
     image: require("@/assets/images/item.png"),
     categoryId: 3,
   },
@@ -117,35 +119,35 @@ export const products = [
   {
     id: 16,
     name: "Shampoo 500ml",
-    price: "₹120",
+    price: 120,
     image: require("@/assets/images/item.png"),
     categoryId: 4,
   },
   {
     id: 17,
     name: "Conditioner 500ml",
-    price: "₹130",
+    price: 130,
     image: require("@/assets/images/item.png"),
     categoryId: 4,
   },
   {
     id: 18,
     name: "Body Lotion 250ml",
-    price: "₹80",
+    price: 80,
     image: require("@/assets/images/item.png"),
     categoryId: 4,
   },
   {
     id: 19,
     name: "Toothpaste 100g",
-    price: "₹40",
+    price: 40,
     image: require("@/assets/images/item.png"),
     categoryId: 4,
   },
   {
     id: 20,
     name: "Soap Pack",
-    price: "₹30",
+    price: 30,
     image: require("@/assets/images/item.png"),
     categoryId: 4,
   },
@@ -153,70 +155,70 @@ export const products = [
   {
     id: 21,
     name: "Orange Juice 1L",
-    price: "₹90",
+    price: 90,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 22,
     name: "Apple Juice 1L",
-    price: "₹100",
+    price: 100,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 23,
     name: "Coca Cola 500ml",
-    price: "₹50",
+    price: 50,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 24,
     name: "Pepsi 500ml",
-    price: "₹50",
+    price: 50,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 25,
     name: "Green Tea 20 Bags",
-    price: "₹60",
+    price: 60,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 26,
     name: "Black Tea 20 Bags",
-    price: "₹55",
+    price: 55,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 27,
     name: "Mineral Water 1.5L",
-    price: "₹20",
+    price: 20,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 28,
     name: "Energy Drink 250ml",
-    price: "₹70",
+    price: 70,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 29,
     name: "Soy Milk 1L",
-    price: "₹110",
+    price: 110,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
   {
     id: 30,
     name: "Almond Milk 1L",
-    price: "₹120",
+    price: 120,
     image: require("@/assets/images/item.png"),
     categoryId: 5,
   },
@@ -224,13 +226,23 @@ export const products = [
 
 export default function ProductScreen() {
   const navigation = useNavigation();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const {
+    data: products,
+    loading,
+    error,
+  } = useListFetch(`/products/categories/${id}`);
+
   useEffect(() => {
+    if (loading) return;
     navigation.setOptions({
       headerShown: true,
-      title: "Products",
+      title: products[0]?.category.name ?? "Products",
       headerTitleAlign: "center",
     });
-  }, [navigation]);
+  }, [navigation, loading]);
+
+  if (loading) return <Loading />;
 
   return <ProductList products={products} />;
 }

@@ -9,13 +9,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "@/hooks/useCart";
+import { formatCurrency } from "@/utils/currency";
 
 interface CartItemProps {
   id: string;
   name: string;
   weight: string;
-  price: number;
-  image: any;
+  price: string;
+  image: string;
   quantity: number;
 }
 
@@ -43,7 +44,10 @@ export default function CartItem({
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <View style={styles.productInfo}>
-          <Image source={image} style={styles.image} />
+          <Image
+            source={{ uri: image, width: 60, height: 60 }}
+            style={styles.image}
+          />
           <View style={styles.textContainer}>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.weight}>{weight}</Text>
@@ -71,7 +75,9 @@ export default function CartItem({
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.price}>₹{(price * quantity).toFixed(2)}</Text>
+          <Text style={styles.price}>
+            {formatCurrency(Number(price) * quantity)}
+          </Text>
         </View>
       </View>
 

@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
+import { ScrollView } from "react-native-gesture-handler";
 
 // TODO: add types
 interface ProductImageCarouselProps {
-  images: any[];
+  images: string[];
 }
 
 const ProductImageCarousel = ({ images }: ProductImageCarouselProps) => {
@@ -18,16 +19,21 @@ const ProductImageCarousel = ({ images }: ProductImageCarouselProps) => {
         width={300}
         height={300}
         data={images}
+        mode="parallax"
         renderItem={({ item }) => (
           <Image
-            source={item}
+            source={{ uri: item, width: 300, height: 300 }}
             style={styles.productImage}
             resizeMode="contain"
           />
         )}
         onSnapToItem={(index) => setCurrentImage(index)}
       />
-      <View style={{ flexDirection: "row" }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flexDirection: "row", marginTop: 10, marginHorizontal: 20 }}
+      >
         {images.map((image, i) => (
           <TouchableOpacity
             key={i}
@@ -39,7 +45,7 @@ const ProductImageCarousel = ({ images }: ProductImageCarouselProps) => {
             }}
           >
             <Image
-              source={image}
+              source={{ uri: image, width: 50, height: 50 }}
               style={[
                 styles.carouselPreviewImage,
                 { opacity: i === currentImage ? 1 : 0.5 },
@@ -48,7 +54,7 @@ const ProductImageCarousel = ({ images }: ProductImageCarouselProps) => {
             />
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 };

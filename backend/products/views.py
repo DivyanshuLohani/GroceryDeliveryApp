@@ -11,6 +11,7 @@ from rest_framework import status
 from .models import Category, Product, ProductImage, ProductReview
 from .serializers import (
     CategoryCreateSerializer,
+    CategoryDetailSerializer,
     CategorySerializer,
     ProductCreateSerializer,
     ProductImageCreateSerializer,

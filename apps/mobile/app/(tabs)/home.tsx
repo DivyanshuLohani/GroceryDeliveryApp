@@ -11,15 +11,23 @@ import SearchBar from "@/components/Home/SearchBar";
 import PromoBanner from "@/components/Home/BannerSection";
 import CategoryGrid from "@/components/Category/CategoryGrid";
 import { ScrollView } from "react-native-gesture-handler";
+import useListFetch from "@/hooks/useListFetch";
+import Loading from "@/components/Loading";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
-
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: [0, -100],
     extrapolate: "clamp",
   });
+  const {
+    data: category,
+    loading,
+    error,
+    hasMore,
+  } = useListFetch("/products/categories/");
+  if (loading) return <Loading />;
 
   return (
     <SafeAreaView>
@@ -45,32 +53,20 @@ export default function HomeScreen() {
       <ScrollView style={{ marginBottom: 100 }}>
         <PromoBanner />
         <ScrollView>
-          <CategoryGrid
-            title={"Dairy and Bakery"}
-            seeAllText={null}
-            seeAllLink={null}
-          />
-          <CategoryGrid title={"Snacks"} seeAllText={null} seeAllLink={null} />
-          <CategoryGrid
-            title={"Fruits and Vegetables"}
-            seeAllText={null}
-            seeAllLink={null}
-          />
-          <CategoryGrid
-            title={"Beverages"}
-            seeAllText={null}
-            seeAllLink={null}
-          />
-          <CategoryGrid
-            title={"Meat and Seafood"}
-            seeAllText={null}
-            seeAllLink={null}
-          />
-          <CategoryGrid
-            title={"Household"}
-            seeAllText={null}
-            seeAllLink={null}
-          />
+          {!loading &&
+            category &&
+            category.map(
+              (c) =>
+                c.subcategories.length > 0 && (
+                  <CategoryGrid
+                    key={c.id}
+                    title={c.name}
+                    categories={c.subcategories}
+                    seeAllText={null}
+                    seeAllLink={null}
+                  />
+                )
+            )}
         </ScrollView>
 
         <TouchableOpacity onPress={() => AsyncStorage.clear()}>

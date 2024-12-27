@@ -3,25 +3,24 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
+import { TCategory } from "@/types/category";
 
-export default function CategoryItem({
-  name,
-  image,
-}: {
-  name: string;
-  image: any;
-}) {
+export default function CategoryItem({ name, image, id }: TCategory) {
   const router = useRouter();
-
   return (
     <TouchableOpacity
       style={styles.categoryItem}
-      onPress={() => router.push(`/category/${name}`)}
+      onPress={() => router.push(`/category/${id}`)}
     >
       <ThemedView style={styles.imageContainer}>
-        <Image source={image} style={styles.categoryImage} />
+        <Image
+          source={{ uri: image, width: 80, height: 80 }}
+          style={styles.categoryImage}
+        />
       </ThemedView>
-      <ThemedText style={styles.categoryName}>{name}</ThemedText>
+      <ThemedText numberOfLines={2} style={styles.categoryName}>
+        {name}
+      </ThemedText>
     </TouchableOpacity>
   );
 }
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
     height: 80,
   },
   categoryImage: {
-    borderRadius: 50,
+    borderRadius: 10,
     width: 80,
     height: 80,
     resizeMode: "contain",

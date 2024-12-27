@@ -4,27 +4,39 @@ import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
 import { useCart } from "@/hooks/useCart";
+import { TProduct } from "@/types/product";
+import { formatCurrency } from "@/utils/currency";
 
 interface ProductCardProps {
-  name: string;
-  price: number;
-  image: any; // Replace `any` with the type for your images if using a stricter type system
+  product: TProduct;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ name, price, image }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const { addItem } = useCart();
   return (
     <TouchableOpacity
-      onPress={() => router.push("/product/1")}
+      onPress={() => router.push(`/product/${product.id}`)}
       style={styles.card}
     >
-      <Image source={image} style={styles.image} />
-      <ThemedText style={styles.name}>{name}</ThemedText>
-      <ThemedText style={styles.price}>{price}</ThemedText>
+      <Image
+        source={{ uri: product.images[0], width: 80, height: 80 }}
+        style={styles.image}
+      />
+      <ThemedText style={styles.name} numberOfLines={1}>
+        {product.name}
+      </ThemedText>
+      <ThemedText style={styles.price}>
+        {formatCurrency(Number(product.price))}
+      </ThemedText>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => addItem({ id: "1", name, price, quantity: 1, image })}
+        onPress={() =>
+          addItem({
+            product,
+            quantity: 1,
+          })
+        }
       >
         <ThemedText style={styles.buttonText}>Add to Cart</ThemedText>
       </TouchableOpacity>
