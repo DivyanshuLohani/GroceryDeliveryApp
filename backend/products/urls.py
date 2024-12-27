@@ -24,7 +24,7 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('categories/<str:id>/', CategoryDetailView.as_view(),
          name='category-detail'),
-    #     path('products/', ProductListView.as_view(), name='product-list'),
+    path('search/<str:query>', ProductListView.as_view(), name='product-search'),
     path('<str:id>/', ProductDetailView.as_view(), name='product-detail'),
 
     path('products/<str:product_id>/reviews/',

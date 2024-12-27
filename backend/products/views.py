@@ -84,6 +84,11 @@ class ProductListView(ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+    lookup_field = 'query'
+
+    def get_queryset(self):
+        query = self.kwargs['query']
+        return Product.objects.filter(name__icontains=query)
 
 
 # View a single Product
