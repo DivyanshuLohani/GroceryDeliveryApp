@@ -17,11 +17,7 @@ import { TCategory } from "@/types/category";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
-  const headerTranslateY = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [0, -100],
-    extrapolate: "clamp",
-  });
+
   const {
     data: category,
     loading,
@@ -29,6 +25,22 @@ export default function HomeScreen() {
     hasMore,
   } = useListFetch<TCategory>("/products/categories/");
   if (loading) return <Loading />;
+
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -500],
+    extrapolate: "clamp",
+  });
+  const searchTranslateY = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -80],
+    extrapolate: "clamp",
+  });
+  const height = scrollY.interpolate({
+    inputRange: [0, 100, 200, 300],
+    outputRange: [100, 100, 100, 100],
+    extrapolate: "clamp",
+  });
 
   return (
     <SafeAreaView>
@@ -39,19 +51,21 @@ export default function HomeScreen() {
         ]}
       >
         <AddressPopup />
-        <Ionicons
-          name="people-circle-outline"
-          size={30}
-          color="white"
-          style={{
-            paddingRight: 20,
-            paddingTop: 20,
-          }}
-        />
       </Animated.View>
-      <SearchBar redirect={true} />
+      <Animated.View
+        style={[{ transform: [{ translateY: searchTranslateY }] }]}
+      >
+        <SearchBar redirect={true} />
+      </Animated.View>
 
-      <ScrollView style={{ marginBottom: 100 }}>
+      <Animated.ScrollView
+        style={{ marginBottom: 100 }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+      >
         <PromoBanner />
         <ScrollView>
           {!loading &&
@@ -75,7 +89,7 @@ export default function HomeScreen() {
             <ThemedText>Logout</ThemedText>
           </ThemedView>
         </TouchableOpacity>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
@@ -84,17 +98,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignContent: "center",
-    justifyContent: "space-between",
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+    justifyContent: "center",
+    // paddingBottom: 20,
   },
 });
