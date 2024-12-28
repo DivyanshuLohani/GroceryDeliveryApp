@@ -12,3 +12,13 @@ export type TUser = {
   auth_provider: "email" | "google" | "facebook" | "apple"; // Example auth providers, expand as needed
   is_active: boolean;
 };
+
+export type TAddress = {
+  street_address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+};

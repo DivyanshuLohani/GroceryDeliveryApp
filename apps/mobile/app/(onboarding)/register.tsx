@@ -1,5 +1,6 @@
+import { api } from "@/api";
 import PasswordValidator from "@/components/PasswordValidator";
-import { Link, useNavigation } from "expo-router";
+import { Link, useNavigation, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -11,7 +12,29 @@ import {
 
 const SignupScreen = () => {
   const navigation = useNavigation();
+  const router = useRouter();
   const [password, setPassword] = useState("");
+  const [firstName, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleRegister = async () => {
+    try {
+      const response = await api.post("/users/register/", {
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phoneNumber,
+        email: email,
+        password: password,
+      });
+      console.log(response);
+      router.replace("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
@@ -21,12 +44,16 @@ const SignupScreen = () => {
         style={styles.input}
         placeholder="First Name"
         placeholderTextColor="#B0B0B0"
+        value={firstName}
+        onChangeText={setName}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Last Name"
         placeholderTextColor="#B0B0B0"
+        value={lastName}
+        onChangeText={setLastName}
       />
 
       <TextInput
@@ -34,6 +61,8 @@ const SignupScreen = () => {
         placeholder="Phone Number"
         placeholderTextColor="#B0B0B0"
         keyboardType="phone-pad"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
       />
 
       <TextInput
@@ -41,6 +70,10 @@ const SignupScreen = () => {
         placeholder="Email"
         placeholderTextColor="#B0B0B0"
         keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+        value={email}
+        onChangeText={setEmail}
       />
 
       <TextInput
@@ -54,7 +87,7 @@ const SignupScreen = () => {
         onChangeText={setPassword}
       />
       <PasswordValidator password={password} />
-      <TouchableOpacity style={styles.signupButton}>
+      <TouchableOpacity style={styles.signupButton} onPress={handleRegister}>
         <Text style={styles.signupButtonText}>Sign Up</Text>
       </TouchableOpacity>
 

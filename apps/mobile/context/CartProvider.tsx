@@ -32,7 +32,7 @@ interface CartContextType extends CartState {
   removeItem: (itemId: string) => Promise<void>;
   increaseQuantity: (itemId: string) => Promise<void>;
   decreaseQuantity: (itemId: string) => Promise<void>;
-  clearCart: () => Promise<void>;
+  clearCart: (server: boolean) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(
@@ -160,8 +160,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     await addItemToCart(itemId, -1);
   };
 
-  const clearCart = async () => {
+  const clearCart = async (server: boolean = true) => {
     dispatch({ type: "CLEAR_CART" });
+    if (!server) return;
     await clearServerCart();
   };
 

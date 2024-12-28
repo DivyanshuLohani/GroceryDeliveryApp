@@ -12,14 +12,17 @@ import { useRouter } from "expo-router";
 import ProfileView from "@/components/Account/ProfileView";
 import { Colors } from "@/constants/Colors";
 import AccountLinks from "@/components/Account/AccountLinks";
+import { useCart } from "@/hooks/useCart";
 
 export default function ProfileScreen() {
   const { logout } = useAuth();
+  const { clearCart } = useCart();
 
   const router = useRouter();
 
   const handleLogout = () => {
     logout();
+    clearCart(false);
     router.push("/login");
   };
 
