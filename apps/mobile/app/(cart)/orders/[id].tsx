@@ -17,6 +17,7 @@ import PaymentDetails from "@/components/Order/PaymentDetails";
 import DeliveryAddress from "@/components/Order/DeliveryAddress";
 import PriceDetails from "@/components/Order/PriceDetails";
 import ErrorPage from "@/components/Error";
+import LoadingScreen from "@/components/Loading";
 
 export default function OrderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -38,7 +39,7 @@ export default function OrderDetailScreen() {
     []
   );
 
-  if (loading) return <Text>Loading...</Text>;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorPage />;
 
   if (!order) return null;
