@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -8,58 +8,29 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { tips } from "@/constants/tips";
+
+const icons: { name: any; color: string }[] = [
+  { name: "pizza", color: "#FF6B6B" },
+  { name: "ice-cream", color: "#FF9F9F" },
+  { name: "cafe", color: "#8B4513" },
+  { name: "restaurant", color: "#FFB347" },
+  { name: "fast-food", color: "#FED049" },
+  { name: "fruit", color: "#77DD77" },
+  { name: "water", color: "#87CEEB" },
+];
 
 const LoadingScreen = () => {
-  const [currentIconIndex, setCurrentIconIndex] = useState(0);
-  const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const spinValue = new Animated.Value(0);
-  const fadeValue = new Animated.Value(1);
+  const [currentIconIndex, setCurrentIconIndex] = useState(
+    Math.floor(Math.random() * icons.length)
+  );
+  const randomTipIndex = useMemo(
+    () => Math.floor(Math.random() * tips.length),
+    []
+  );
 
-  const icons: {
-    name: any;
-    color: string;
-  }[] = [
-    { name: "reload-circle", color: "#3B82F6" },
-    { name: "time", color: "#10B981" },
-    { name: "sync-circle", color: "#6366F1" },
-    { name: "hourglass", color: "#F59E0B" },
-    { name: "compass", color: "#EC4899" },
-    { name: "sparkles", color: "#8B5CF6" },
-    { name: "brain", color: "#EF4444" },
-  ];
-
-  const tips = [
-    "Did you know? Taking regular breaks improves productivity.",
-    "Stay hydrated! Drink water regularly throughout the day.",
-    "Deep breathing can help reduce stress and anxiety.",
-    "Try the 20-20-20 rule: Look 20 feet away every 20 minutes for 20 seconds.",
-    "Regular exercise boosts both physical and mental health.",
-    "A good night's sleep is crucial for memory consolidation.",
-    "Practice mindfulness to stay focused and reduce stress.",
-    "Organize your workspace for better productivity.",
-    "Take short walks to boost creativity and energy.",
-    "Use the Pomodoro Technique for better time management.",
-    "Stretch regularly to prevent muscle tension.",
-    "Practice gratitude daily for better mental well-being.",
-    "Learn something new every day to keep your mind sharp.",
-    "Good posture helps prevent back pain and fatigue.",
-    "Take time to disconnect from digital devices.",
-    "Healthy snacks can help maintain energy levels.",
-    "Listen to calming music to reduce stress.",
-    "Set clear goals to stay motivated and focused.",
-    "Remember to blink often when using screens.",
-    "Stay connected with friends and family.",
-    "Natural light can improve mood and productivity.",
-    "Regular breaks help prevent decision fatigue.",
-    "Practice active listening in conversations.",
-    "Celebrate small wins throughout the day.",
-    "Write down your thoughts to clear your mind.",
-    "Try new perspectives when solving problems.",
-    "Maintain a consistent daily routine.",
-    "Small progress is still progress.",
-    "Your best is always good enough.",
-    "Remember to smile - it boosts your mood!",
-  ];
+  const spinValue = React.useRef(new Animated.Value(0)).current;
+  const fadeValue = React.useRef(new Animated.Value(1)).current;
 
   const startSpinAnimation = () => {
     spinValue.setValue(0);
@@ -72,28 +43,30 @@ const LoadingScreen = () => {
   };
 
   const startFadeAnimation = () => {
-    fadeValue.setValue(0);
-    Animated.timing(fadeValue, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    fadeValue.setValue(1);
+    Animated.sequence([
+      Animated.timing(fadeValue, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeValue, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   useEffect(() => {
     const iconInterval = setInterval(() => {
       setCurrentIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
       startSpinAnimation();
-    }, 1000);
-
-    const tipInterval = setInterval(() => {
-      setCurrentTipIndex((prevIndex) => (prevIndex + 1) % tips.length);
       startFadeAnimation();
-    }, 3000);
+    }, 2000);
 
     return () => {
       clearInterval(iconInterval);
-      clearInterval(tipInterval);
     };
   }, []);
 
@@ -102,11 +75,16 @@ const LoadingScreen = () => {
     outputRange: ["0deg", "360deg"],
   });
 
+  const combinedTransform = [{ rotate: spin }];
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Animated.View
-          style={[styles.iconContainer, { transform: [{ rotate: spin }] }]}
+          style={[
+            styles.iconContainer,
+            { transform: combinedTransform, opacity: fadeValue },
+          ]}
         >
           <Ionicons
             name={icons[currentIconIndex].name}
@@ -114,8 +92,8 @@ const LoadingScreen = () => {
             color={icons[currentIconIndex].color}
           />
         </Animated.View>
-        <Animated.View style={[styles.tipContainer, { opacity: fadeValue }]}>
-          <Text style={styles.tipText}>{tips[currentTipIndex]}</Text>
+        <Animated.View style={[styles.tipContainer]}>
+          <Text style={styles.tipText}>{tips[randomTipIndex]}</Text>
         </Animated.View>
       </View>
     </View>

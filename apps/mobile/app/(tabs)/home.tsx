@@ -13,6 +13,7 @@ import CategoryGrid from "@/components/Category/CategoryGrid";
 import { ScrollView } from "react-native-gesture-handler";
 import useListFetch from "@/hooks/useListFetch";
 import Loading from "@/components/Loading";
+import { TCategory } from "@/types/category";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -26,7 +27,7 @@ export default function HomeScreen() {
     loading,
     error,
     hasMore,
-  } = useListFetch("/products/categories/");
+  } = useListFetch<TCategory>("/products/categories/");
   if (loading) return <Loading />;
 
   return (
