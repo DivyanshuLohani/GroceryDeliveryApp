@@ -16,7 +16,6 @@ const OrderDetails = ({ onClose }: OrderDetailsProps) => {
 
   const handleOrder = async () => {
     try {
-      console.log("placing order");
       await api.post("/orders/order/", {
         order_items: items.map((item) => ({
           product: item.product.id,

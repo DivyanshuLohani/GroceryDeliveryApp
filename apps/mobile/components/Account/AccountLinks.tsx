@@ -14,7 +14,6 @@ const menuItems: MenuItem[] = [
   //   { icon: "ticket-outline", title: "Promo Card", onPress: () => {} },
   //   { icon: "settings-outline", title: "Settings", href: "/settings" },
   { icon: "receipt-outline", title: "Orders", href: "/orders" },
-  { icon: "person-outline", title: "My Details", href: "/profile" },
   { icon: "location-outline", title: "Delivery Address", href: "/address" },
   { icon: "card-outline", title: "Payment Methods", href: "/payment-methods" },
   {
@@ -22,13 +21,13 @@ const menuItems: MenuItem[] = [
     title: "Notifecations",
     href: "/notifications",
   },
-  { icon: "help-circle-outline", title: "Help", href: "/help" },
   { icon: "information-circle-outline", title: "About", href: "/about" },
   {
     icon: "document-outline",
     title: "Terms And Conditions",
     href: "/terms",
   },
+  { icon: "help-circle-outline", title: "Help", href: "/help" },
 ];
 
 const AccountLinks = () => {

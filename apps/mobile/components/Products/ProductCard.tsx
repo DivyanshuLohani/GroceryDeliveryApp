@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { ThemedView } from "../ThemedView";
+import { Image, TouchableOpacity, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
 import { useCart } from "@/hooks/useCart";
@@ -31,12 +30,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </ThemedText>
       <TouchableOpacity
         style={styles.button}
-        onPress={() =>
+        onPress={() => {
           addItem({
             product,
             quantity: 1,
-          })
-        }
+          });
+        }}
       >
         <ThemedText style={styles.buttonText}>Add to Cart</ThemedText>
       </TouchableOpacity>
