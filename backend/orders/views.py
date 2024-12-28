@@ -41,6 +41,12 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
     def check_object_permissions(self, request, obj):
         if request.user.is_staff or request.user.is_superuser or request.user == obj.user:
             return True
+        if request.user.user_type == "admin":
+            return True
+
+        if request.user.user_type == "delivery_partner" and obj.assigned_partner == request.user:
+            return True
+
         return False
 
 
