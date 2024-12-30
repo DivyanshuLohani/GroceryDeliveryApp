@@ -15,10 +15,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 load_dotenv()
+
+# =============================
+# BASE SETTINGS
+# =============================
 BASE_DIR = Path(__file__).resolve().parent.parent
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET")
 DEBUG = True if os.getenv("DEBUG") else False
 ALLOWED_HOSTS = ["*"]
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'orders',
     'products',
     'users',
+
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'common.middleware.SlowMiddleware',
 ]
 ROOT_URLCONF = 'server.urls'
 TEMPLATES = [
@@ -154,7 +157,12 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
 PHONE_NUMBER_VERIFICATION = False
 
 MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+
+# TESTING
+ARTIFICIAL_DELAY = 3 if DEBUG else 0

@@ -66,6 +66,9 @@ class Order(BaseModel):
         related_name='assigned_partner'
     )
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f"Order {self.id} by {self.user}"
 
