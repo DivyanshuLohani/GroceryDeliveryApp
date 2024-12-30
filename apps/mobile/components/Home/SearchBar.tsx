@@ -55,9 +55,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    gap: 8,
-    backgroundColor: "#EEEEEE",
+    elevation: 2,
+    // Shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    marginBottom: 10,
   },
   searchSection: {
     flex: 1,

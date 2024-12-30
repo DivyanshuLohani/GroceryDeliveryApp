@@ -1,11 +1,14 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View, Text, Dimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
 import { useCart } from "@/hooks/useCart";
 import { TProduct } from "@/types/product";
 import { formatCurrency } from "@/utils/currency";
+import { Colors } from "@/constants/Colors";
+
+const { width } = Dimensions.get("window");
+const COLUMN_WIDTH = (width - 48) / 2;
 
 interface ProductCardProps {
   product: TProduct;
@@ -14,73 +17,76 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const { addItem } = useCart();
+  const { id, name, images, price } = product;
   return (
     <TouchableOpacity
-      onPress={() => router.push(`/product/${product.id}`)}
       style={styles.card}
+      onPress={() => router.push(`/product/${id}`)}
     >
       <Image
-        source={{ uri: product.images[0], width: 80, height: 80 }}
+        source={{ uri: images[0] }}
         style={styles.image}
+        resizeMode="cover"
       />
-      <ThemedText style={styles.name} numberOfLines={1}>
-        {product.name}
-      </ThemedText>
-      <ThemedText style={styles.price}>
-        {formatCurrency(Number(product.price))}
-      </ThemedText>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          addItem({
-            product,
-            quantity: 1,
-          });
-        }}
-      >
-        <ThemedText style={styles.buttonText}>Add to Cart</ThemedText>
-      </TouchableOpacity>
+      <View style={styles.content}>
+        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+          {name}
+        </Text>
+        <Text style={styles.price}>{formatCurrency(price)}</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => addItem({ product, quantity: 1 })}
+        >
+          <Text style={styles.buttonText}>Add to Cart</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    flex: 1,
+    width: COLUMN_WIDTH,
+    margin: 8,
     backgroundColor: "#fff",
-    borderRadius: 10,
-    margin: 10,
-    padding: 10,
-    alignItems: "center",
-    elevation: 2,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   image: {
-    width: 80,
-    height: 80,
-    resizeMode: "contain",
+    width: "100%",
+    height: COLUMN_WIDTH,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
-  name: {
+  content: {
+    padding: 12,
+  },
+  title: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
-
-    marginVertical: 5,
+    fontWeight: "500",
+    marginBottom: 8,
+    lineHeight: 20,
   },
   price: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.tint,
+    marginBottom: 8,
   },
-  button: {
-    marginTop: 10,
-    backgroundColor: "#ff9800",
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    borderRadius: 5,
+  addButton: {
+    backgroundColor: Colors.light.tint,
+    borderRadius: 8,
+    padding: 8,
+    alignItems: "center",
   },
   buttonText: {
     color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });
 

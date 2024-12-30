@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import React, { useRef, useState, useEffect } from "react";
 import {
   View,
@@ -108,6 +109,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeDot: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.light.tint,
   },
 });

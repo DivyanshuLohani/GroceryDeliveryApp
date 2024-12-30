@@ -49,5 +49,9 @@ const styles = StyleSheet.create({
     // padding: 10,
     width: "100%",
     marginHorizontal: "auto",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 100,
   },
 });

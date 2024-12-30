@@ -10,7 +10,7 @@ export const Colors = {
   light: {
     text: "#333", // Dark text for light theme
     background: "#FFF9DB", // Light yellow background
-    tint: "#FFC107", // Golden yellow for highlights
+    tint: "#007AFF", // Golden yellow for highlights
     icon: "#B0B0B0", // Light gray for icons
     tabIconDefault: "#B0B0B0", // Default tab icon
     tabIconSelected: "#FFC107", // Selected tab icon

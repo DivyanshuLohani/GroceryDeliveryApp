@@ -48,7 +48,10 @@ export default function HomeScreen() {
         <AddressPopup />
       </Animated.View>
       <Animated.View
-        style={[{ transform: [{ translateY: searchTranslateY }] }]}
+        style={[
+          { padding: 16 },
+          { transform: [{ translateY: searchTranslateY }] },
+        ]}
       >
         <SearchBar redirect={true} />
       </Animated.View>
@@ -62,22 +65,21 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <PromoBanner />
-        <ScrollView>
-          {!loading &&
-            category &&
-            category.map(
-              (c) =>
-                c.subcategories.length > 0 && (
-                  <CategoryGrid
-                    key={c.id}
-                    title={c.name}
-                    categories={c.subcategories}
-                    seeAllText={null}
-                    seeAllLink={null}
-                  />
-                )
-            )}
-        </ScrollView>
+
+        {!loading &&
+          category &&
+          category.map(
+            (c) =>
+              c.subcategories.length > 0 && (
+                <CategoryGrid
+                  key={c.id}
+                  title={c.name}
+                  categories={c.subcategories}
+                  seeAllText={null}
+                  seeAllLink={null}
+                />
+              )
+          )}
       </Animated.ScrollView>
     </SafeAreaView>
   );

@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNCSTORAGE_USER_INFO } from "@/constants/asycnStorage";
 import { TUser } from "@/types";
 import Loading from "../Loading";
+import { Colors } from "@/constants/Colors";
 
 const ProfileView = () => {
   const [userInfo, setUserInfo] = useState<TUser | null>(null);
@@ -31,9 +32,9 @@ const ProfileView = () => {
         </Text>
         <View style={styles.emailContainer}>
           <Text style={styles.email}>{userInfo.email}</Text>
-          <TouchableOpacity>
-            <Ionicons name="pencil" size={16} color="#4CAF50" />
-          </TouchableOpacity>
+          {/* <TouchableOpacity>
+            <Ionicons name="pencil" size={16} color={Colors.light.tint} />
+          </TouchableOpacity> */}
         </View>
       </View>
     </View>

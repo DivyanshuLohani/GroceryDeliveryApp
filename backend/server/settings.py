@@ -165,4 +165,4 @@ MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # TESTING
-ARTIFICIAL_DELAY = 3 if DEBUG else 0
+ARTIFICIAL_DELAY = 0 if DEBUG else 0

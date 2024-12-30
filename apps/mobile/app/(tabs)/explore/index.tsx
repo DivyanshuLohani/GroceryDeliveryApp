@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,8 @@ import { useRouter } from "expo-router";
 import useListFetch from "@/hooks/useListFetch";
 import { TCategory } from "@/types/category";
 import Loading from "@/components/Loading";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import CategoryItem from "@/components/Category/CategoryItem";
 
 const ProductCategories = () => {
   const router = useRouter();
@@ -21,12 +22,17 @@ const ProductCategories = () => {
     loading,
     error,
   } = useListFetch<TCategory>("/products/categories/");
+
+  const subCategories = useMemo(() => {
+    if (!categories) return [];
+    return categories.flatMap((parent) => parent.subcategories);
+  }, [categories]);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Find Products</Text>
 
       {/* Search Bar */}
-      <View style={{ marginBottom: 10 }}>
+      <View style={{ marginBottom: 10, backgroundColor: "white" }}>
         <SearchBar
           redirect={false}
           onSearch={(q) => {
@@ -36,24 +42,21 @@ const ProductCategories = () => {
       </View>
       {loading && <Loading />}
       {/* Categories Grid */}
-      <ScrollView contentContainerStyle={styles.categoriesContainer}>
-        {categories.map((parent) =>
-          parent.subcategories.map((category) => (
-            <TouchableOpacity
-              onPress={() => router.push(`/category/${category.id}`)}
-              key={category.id}
-              style={[styles.categoryCard, category.colors]}
-            >
-              <Image
-                source={{ uri: category.image, height: 100, width: 100 }}
-                style={styles.categoryImage}
-                resizeMode="contain"
-              />
-              <Text style={styles.categoryTitle}>{category.name}</Text>
-            </TouchableOpacity>
-          ))
-        )}
-      </ScrollView>
+      <View
+        style={{
+          marginBottom: 150,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <FlatList
+          data={subCategories}
+          renderItem={({ item }) => <CategoryItem {...item} />}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -67,7 +70,8 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: "600",
-    marginTop: 12,
+    marginTop: 30,
+    marginLeft: 16,
     marginBottom: 16,
   },
 

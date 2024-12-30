@@ -5,6 +5,7 @@ import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { TCategory } from "@/types/category";
+import { FlatList } from "react-native-gesture-handler";
 
 interface CategoryGridProps {
   title: string;
@@ -30,9 +31,18 @@ const CategoryGrid = ({
           </TouchableOpacity>
         )}
       </View>
+      {/* <FlatList
+        data={categories}
+        renderItem={({ item }) => <CategoryItem {...item} />}
+        keyExtractor={(item) => item.id}
+        
+        horizontal
+        ListHeaderComponent={null}
+        ListFooterComponent={null}
+      /> */}
       <View style={styles.grid}>
         {categories.map((category) => (
-          <CategoryItem key={category.id} {...category} />
+          <CategoryItem key={category.id} {...category} width={104} />
         ))}
       </View>
     </View>

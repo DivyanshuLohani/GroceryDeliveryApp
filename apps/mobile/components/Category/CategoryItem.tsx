@@ -1,68 +1,71 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
 import { TCategory } from "@/types/category";
 
-export default function CategoryItem({ name, image, id }: TCategory) {
+const { width } = Dimensions.get("window");
+const COLUMN_WIDTH = (width - 64) / 2; // 2 columns with 16px padding on sides and between
+
+interface CategoryItemProps extends TCategory {
+  width?: number;
+}
+
+export default function CategoryItem({
+  name,
+  image,
+  id,
+  width = COLUMN_WIDTH,
+}: CategoryItemProps) {
   const router = useRouter();
+  const onPress = () => {
+    router.push(`/category/${id}`);
+  };
   return (
-    <TouchableOpacity
-      style={styles.categoryItem}
-      onPress={() => router.push(`/category/${id}`)}
-    >
-      <ThemedView style={styles.imageContainer}>
-        <Image
-          source={{ uri: image, width: 80, height: 80 }}
-          style={styles.categoryImage}
-        />
-      </ThemedView>
-      <ThemedText numberOfLines={2} style={styles.categoryName}>
+    <TouchableOpacity style={[styles.card, { width }]} onPress={onPress}>
+      <Image
+        source={{ uri: image }}
+        style={[styles.image, { height: width }]}
+        resizeMode="cover"
+      />
+      <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
         {name}
-      </ThemedText>
+      </Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  categoryItem: {
-    alignItems: "center",
-    marginBottom: 16,
-    borderRadius: 10,
-    padding: 10,
-    width: 120,
-    height: 150,
-    justifyContent: "center",
+  card: {
+    margin: 8,
+    backgroundColor: "#fff",
+    borderRadius: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-    backgroundColor: "#f8f8f8",
+    shadowRadius: 4,
+    elevation: 3,
   },
-  imageContainer: {
-    // backgroundColor: "#E8F5E9",
-    // borderRadius: 50,
-    justifyContent: "center",
-
-    marginBottom: 8,
-
-    width: 80,
-    height: 80,
+  image: {
+    width: "100%",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    overflow: "hidden",
+    objectFit: "cover",
   },
-  categoryImage: {
-    borderRadius: 10,
-    width: 80,
-    height: 80,
-    resizeMode: "contain",
-  },
-  categoryName: {
+  title: {
     fontSize: 14,
-    textAlign: "center",
     fontWeight: "500",
-    color: "#333",
-    alignSelf: "center",
-    justifyContent: "center",
+    padding: 12,
+    textAlign: "center",
+    lineHeight: 20,
   },
 });
