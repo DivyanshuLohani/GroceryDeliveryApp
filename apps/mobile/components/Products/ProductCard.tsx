@@ -1,5 +1,6 @@
 import React from "react";
-import { Image, TouchableOpacity, StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { ThemedText } from "../ThemedText";
 import { useRouter } from "expo-router";
 import { useCart } from "@/hooks/useCart";

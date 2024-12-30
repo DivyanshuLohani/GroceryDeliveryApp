@@ -2,13 +2,8 @@ import { api } from "@/api";
 import PasswordValidator from "@/components/PasswordValidator";
 import { Link, useNavigation, useRouter } from "expo-router";
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const SignupScreen = () => {
   const navigation = useNavigation();

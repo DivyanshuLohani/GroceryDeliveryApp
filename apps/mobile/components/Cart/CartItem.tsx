@@ -1,15 +1,9 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "@/hooks/useCart";
 import { formatCurrency } from "@/utils/currency";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface CartItemProps {
   id: string;

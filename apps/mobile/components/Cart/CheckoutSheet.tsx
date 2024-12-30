@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React, { useMemo, useState } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/useCart";
 import { Colors } from "@/constants/Colors";
 import EmptyCartPage from "@/app/(cart)/checkout";
 import OrderDetails from "./OrderDetails";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const CheckoutSheet = () => {
   const bottomSheetRef = React.useRef<BottomSheet>(null);

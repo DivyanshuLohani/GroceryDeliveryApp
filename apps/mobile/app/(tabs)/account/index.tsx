@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
@@ -13,6 +7,7 @@ import ProfileView from "@/components/Account/ProfileView";
 import { Colors } from "@/constants/Colors";
 import AccountLinks from "@/components/Account/AccountLinks";
 import { useCart } from "@/hooks/useCart";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function ProfileScreen() {
   const { logout } = useAuth();

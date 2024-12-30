@@ -1,12 +1,5 @@
 import React, { useMemo } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useFetch from "@/hooks/useFetch";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -18,6 +11,7 @@ import DeliveryAddress from "@/components/Order/DeliveryAddress";
 import PriceDetails from "@/components/Order/PriceDetails";
 import ErrorPage from "@/components/Error";
 import LoadingScreen from "@/components/Loading";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function OrderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

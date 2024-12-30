@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
   SafeAreaView,
   Image,
@@ -13,6 +12,7 @@ import { useRouter } from "expo-router";
 import useListFetch from "@/hooks/useListFetch";
 import { TCategory } from "@/types/category";
 import Loading from "@/components/Loading";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const ProductCategories = () => {
   const router = useRouter();
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginHorizontal: 10,
     paddingTop: 20,
   },
   header: {
@@ -77,6 +76,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     paddingBottom: 20,
+    paddingHorizontal: 16,
   },
   categoryCard: {
     width: "48%",

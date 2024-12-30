@@ -1,20 +1,9 @@
 import CartItem from "@/components/Cart/CartItem";
-import { Colors } from "@/constants/Colors";
 import { useCart } from "@/hooks/useCart";
-import { useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
-import {
-  View,
-  FlatList,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import React from "react";
+import { View, FlatList, Text, StyleSheet } from "react-native";
 import EmptyCartPage from "../(cart)/checkout";
 import { CartItem as TCartItem } from "@/types/cart";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import CheckoutSheet from "@/components/Cart/CheckoutSheet";
 
 const CartPage = () => {

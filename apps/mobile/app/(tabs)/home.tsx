@@ -1,12 +1,7 @@
-import { StyleSheet, Platform, TouchableOpacity, Animated } from "react-native";
-
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { StyleSheet, Animated } from "react-native";
 import React, { useRef } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddressPopup from "@/components/Home/addressPopup";
-import { Ionicons } from "@expo/vector-icons";
 import SearchBar from "@/components/Home/SearchBar";
 import PromoBanner from "@/components/Home/BannerSection";
 import CategoryGrid from "@/components/Category/CategoryGrid";
@@ -83,12 +78,6 @@ export default function HomeScreen() {
                 )
             )}
         </ScrollView>
-
-        <TouchableOpacity onPress={() => AsyncStorage.clear()}>
-          <ThemedView>
-            <ThemedText>Logout</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
       </Animated.ScrollView>
     </SafeAreaView>
   );

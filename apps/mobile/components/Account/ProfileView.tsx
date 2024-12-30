@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { ThemedView } from "../ThemedView";
 import { Ionicons } from "@expo/vector-icons";

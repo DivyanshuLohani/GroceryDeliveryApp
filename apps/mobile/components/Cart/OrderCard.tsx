@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import React, { useMemo } from "react";
 import { TOrder, TOrderItem } from "@/types/cart";
 import { formatCurrency } from "@/utils/currency";
 import { useRouter } from "expo-router";
 import { getStatusColor } from "@/utils/color";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const OrderItem = ({ item }: { item: TOrderItem }) => {
   return (
