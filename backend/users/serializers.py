@@ -33,6 +33,29 @@ class ProductReviewUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'created_at')
 
 
+class AddressCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Address
+        fields = (
+            'label',
+            'street_address',
+            'city',
+            'state',
+            'zip_code',
+            'country',
+            'name',
+            'phone_number',
+            'latitude',
+            'longitude',
+        )
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        validated_data['user'] = user
+        return super().create(validated_data)
+
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address

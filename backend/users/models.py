@@ -48,18 +48,16 @@ class Address(BaseModel):
     state = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
     country = models.CharField(
-        max_length=100, default="India")  # Default country
+        max_length=100, default="IN")  # Default country
     latitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
-        null=True,
-        blank=True
+        max_digits=18,  # Total digits (10 before decimal + 8 after)
+        decimal_places=15,  # Precision up to 15 decimal places
+
     )
     longitude = models.DecimalField(
-        max_digits=9,
-        decimal_places=6,
-        null=True,
-        blank=True
+        max_digits=18,  # Total digits (10 before decimal + 8 after)
+        decimal_places=15,  # Precision up to 15 decimal places
+
     )
     name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15, null=True, blank=True)

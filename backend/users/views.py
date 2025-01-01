@@ -1,8 +1,7 @@
-from rest_framework.exceptions import ParseError
 from rest_framework.views import APIView, Response
-from .serializers import UserSerializer, UserRegisterSerializer
+from .serializers import AddressCreateSerializer, UserSerializer, UserRegisterSerializer, AddressSerializer
 from django.contrib.auth import get_user_model
-from rest_framework.generics import RetrieveAPIView, CreateAPIView
+from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny
 
 # Create your views here.
@@ -30,3 +29,26 @@ class UserView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class AddressCreateView(CreateAPIView):
+    serializer_class = AddressCreateSerializer
+
+
+class AddressView(ListAPIView):
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        return self.request.user.addresses.all()
+
+
+class AddressDetailView(RetrieveAPIView):
+    serializer_class = AddressSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return self.request.user.addresses.all()
+
+    def check_object_permissions(self, request, obj):
+        if obj.user != request.user:
+            self.permission_denied(request)
