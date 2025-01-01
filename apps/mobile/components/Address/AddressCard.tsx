@@ -5,40 +5,27 @@ import { useRouter } from "expo-router";
 import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ASYNCSTORAGE_ADDRESS_KEY } from "@/constants/asycnStorage";
+import { useAddress } from "@/hooks/useAddress";
+import { useEffect } from "react";
 
 export default function AddressCard({
   address,
-  index,
-  selectedAddress,
-  setSelectedAddress,
   onSelected,
 }: {
   address: TAddress;
-  index: number;
-  selectedAddress: number;
-  setSelectedAddress: (index: number) => void;
   onSelected?: (address: TAddress) => void;
 }) {
-  const isSelected = selectedAddress === index;
+  const { selectedAddress, setSelectedAddress } = useAddress();
   const router = useRouter();
-
-  const handleSelectedAddress = async () => {
-    setSelectedAddress(index);
-    await AsyncStorage.setItem(
-      ASYNCSTORAGE_ADDRESS_KEY,
-      JSON.stringify(address)
-    );
-    if (onSelected) {
-      onSelected(address);
-    }
-  };
+  const isSelected = selectedAddress?.id === address.id;
 
   return (
     <TouchableOpacity
       style={[styles.addressCard, isSelected && styles.selectedCard]}
-      onPress={handleSelectedAddress}
+      onPress={() => {
+        setSelectedAddress(address);
+        onSelected && onSelected(address);
+      }}
     >
       <View style={styles.addressHeader}>
         <View style={styles.typeContainer}>

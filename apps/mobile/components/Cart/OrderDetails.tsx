@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
-import React, { useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { formatCurrency } from "@/utils/currency";
 import { useCart } from "@/hooks/useCart";
 import { Colors } from "@/constants/Colors";
 import { api } from "@/api";
+import { useAddress } from "@/hooks/useAddress";
 
 interface OrderDetailsProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ interface OrderDetailsProps {
 
 const OrderDetails = ({ onClose }: OrderDetailsProps) => {
   const { total, items, clearCart } = useCart();
+  const { selectedAddress } = useAddress();
 
   const handleOrder = async () => {
     try {

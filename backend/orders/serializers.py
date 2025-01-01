@@ -17,6 +17,9 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 # Payment Create Serializer
 class PaymentCreateSerializer(serializers.ModelSerializer):
+    payment_status = serializers.CharField(read_only=True)
+    transaction_id = serializers.CharField(read_only=True)
+
     class Meta:
         model = Payment
         fields = ['payment_method', 'payment_status',
@@ -69,16 +72,14 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     order_items = OrderItemCreateSerializer(many=True)
+    address = serializers.PrimaryKeyRelatedField(
+        queryset=Address.objects.all(), write_only=True)
 
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items')
         user = self.context['request'].user
-
-        # TODO: Remove this
-        address = Address.objects.first()
-
         order = Order.objects.create(
-            **validated_data, user=user, address=address)
+            **validated_data, user=user)
         for item_data in order_items_data:
             OrderItem.objects.create(order=order, **item_data)
         return order
@@ -86,7 +87,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['status',
-                  #   'address', 'payment',
+                  'address',
                   'order_items', 'created_at']
 
 

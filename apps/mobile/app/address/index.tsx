@@ -1,29 +1,15 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  StatusBar,
-  Platform,
-} from "react-native";
+import React from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import useListFetch from "@/hooks/useListFetch";
-import { TAddress } from "@/types";
 import { Colors } from "@/constants/Colors";
-import { capitalize } from "@/utils/text";
 import AddressCard from "@/components/Address/AddressCard";
+import { useAddress } from "@/hooks/useAddress";
 
 const DeliveryAddressesScreen = () => {
-  const [selectedAddress, setSelectedAddress] = useState(0);
-  const {
-    data: addresses,
-    loading,
-    error,
-  } = useListFetch<TAddress>("/users/address/");
+  const { addresses } = useAddress();
   const router = useRouter();
 
   return (
@@ -34,13 +20,7 @@ const DeliveryAddressesScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         {addresses.map((address, index) => (
-          <AddressCard
-            key={address.id}
-            address={address}
-            index={index}
-            selectedAddress={selectedAddress}
-            setSelectedAddress={setSelectedAddress}
-          />
+          <AddressCard key={address.id} address={address} />
         ))}
       </ScrollView>
       <View style={styles.buttonContainer}>

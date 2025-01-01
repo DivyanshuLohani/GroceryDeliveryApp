@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import MapView from "react-native-maps";
+import { StyleSheet, View, Text } from "react-native";
+import MapView, { MapMarker, Overlay } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { Stack, useRouter } from "expo-router";
-import AddressDetailsForm from "@/components/Address/AddressDetails";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const DeliveryLocationPicker: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
@@ -18,7 +18,6 @@ const DeliveryLocationPicker: React.FC = () => {
         latitude: coords.latitude,
         longitude: coords.longitude,
       });
-      console.log(address);
 
       if (address[0]) {
         setSelectedLocation({
@@ -77,7 +76,7 @@ const DeliveryLocationPicker: React.FC = () => {
           onRegionChangeComplete={onRegionChangeComplete}
           showsUserLocation={true}
           onMapReady={onMapReady}
-        />
+        ></MapView>
 
         {/* Static pin in the center of the map */}
         <View style={styles.markerFixed}>
@@ -104,8 +103,7 @@ const DeliveryLocationPicker: React.FC = () => {
             style={styles.confirmButton}
             onPress={() => {
               if (selectedLocation) {
-                console.log(selectedLocation);
-                router.push(
+                router.replace(
                   `/address/new/details?lat=${selectedLocation.latitude}&long=${selectedLocation.longitude}&subAddress=${selectedLocation.district}&city=${selectedLocation.city}&state=${selectedLocation.region}&country=${selectedLocation.isoCountryCode}`
                 );
               }
@@ -138,7 +136,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   map: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
   },
   markerFixed: {
     position: "absolute",
@@ -152,7 +150,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    // position: "absolute",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
     marginBottom: 100,
     zIndex: 1,
   },

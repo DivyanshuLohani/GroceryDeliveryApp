@@ -1,7 +1,5 @@
-import React, { createContext, useContext, useReducer } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useReducer } from "react";
 import { CartItem } from "@/types/cart";
-import { ASYNCSTORAGE_CART_KEY } from "@/constants/asycnStorage";
 import {
   addItemToCart,
   getCart,
@@ -32,15 +30,12 @@ interface CartContextType extends CartState {
   removeItem: (itemId: string) => Promise<void>;
   increaseQuantity: (itemId: string) => Promise<void>;
   decreaseQuantity: (itemId: string) => Promise<void>;
-  clearCart: (server: boolean) => Promise<void>;
+  clearCart: (server?: boolean) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(
   undefined
 );
-
-const CART_STORAGE_KEY = ASYNCSTORAGE_CART_KEY;
-
 const initialState: CartState = {
   items: [],
   total: 0,

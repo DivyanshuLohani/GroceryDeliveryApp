@@ -13,6 +13,7 @@ import {
   ASYNCSTORAGE_TOKEN,
   ASYNCSTORAGE_USER_INFO,
 } from "@/constants/asycnStorage";
+import { useNavigation, useRouter } from "expo-router";
 
 interface IAuth {
   access: string;
@@ -47,6 +48,8 @@ export const AuthProvider = ({
   const [auth, setAuth] = useState<IAuth | null>(null);
   const [userInfo, setUserInfo] = useState<TUser | null>(null);
   const [ready, setReady] = useState<boolean>(false);
+  const router = useRouter();
+  const navigation = useNavigation();
 
   useEffect(() => {
     checkLogin();
@@ -64,6 +67,7 @@ export const AuthProvider = ({
       const res = await api.post(`/users/login/`, { email, password });
       setAuth(res.data);
       await AsyncStorage.setItem(ASYNCSTORAGE_TOKEN, JSON.stringify(res.data));
+      api.defaults.headers.common.Authorization = `Bearer ${res.data.access}`;
       return true;
     } catch (e) {
       console.log(`Error in login: ${e}`);
@@ -96,6 +100,8 @@ export const AuthProvider = ({
     setUserInfo(null);
     setAuth(null);
     AsyncStorage.clear();
+    api.defaults.headers.common.Authorization = "";
+    router.dismissTo("/login");
   };
 
   const checkLogin = async (): Promise<void> => {

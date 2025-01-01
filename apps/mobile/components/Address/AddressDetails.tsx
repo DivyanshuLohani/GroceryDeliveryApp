@@ -3,16 +3,12 @@ import { AddressForm } from "@/types";
 import { capitalize } from "@/utils/text";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
+import { StyleSheet, Text, ActivityIndicator, Alert, View } from "react-native";
 import {
-  StyleSheet,
-  Text,
+  ScrollView,
   TouchableOpacity,
-  ActivityIndicator,
-  Alert,
   TextInput,
-  View,
-} from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+} from "react-native-gesture-handler";
 
 interface AddressDetailsProps {
   latitude: number;

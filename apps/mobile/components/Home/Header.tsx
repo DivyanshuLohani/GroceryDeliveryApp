@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { TAddress } from "@/types";
-import { ASYNCSTORAGE_ADDRESS_KEY } from "@/constants/asycnStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation, usePathname, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Animated, Image, View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useAddress } from "@/hooks/useAddress";
 
 const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 60;
@@ -17,26 +15,8 @@ interface HeaderProps {
 }
 
 const AnimatedHeader: React.FC<HeaderProps> = ({ scrollY }) => {
-  const [selectedAddress, setSelectedAddress] = useState<TAddress | null>(null);
-  const navigation = useNavigation();
   const router = useRouter();
-  const pathName = usePathname();
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const address = await AsyncStorage.getItem(ASYNCSTORAGE_ADDRESS_KEY);
-      if (address) {
-        try {
-          setSelectedAddress(JSON.parse(address));
-        } catch {}
-      }
-    };
-    const unsubscribe = navigation.addListener("state", getAddress);
-
-    getAddress();
-
-    return unsubscribe;
-  }, [navigation, router, pathName]);
+  const { selectedAddress } = useAddress();
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
