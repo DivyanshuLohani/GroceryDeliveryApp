@@ -1,3 +1,23 @@
+import { z } from "zod";
+
+export const AddressFormSchema = z.object({
+  label: z.enum(["home", "work", "other"]),
+  name: z.string().min(1, "Name is required"),
+  phone_number: z
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format"),
+  street_address: z.string().min(1, "Street address is required"),
+  area: z.string().min(1, "Area is required"),
+  city: z.string().min(1, "City is required"),
+  zip_code: z.string().regex(/^\d{4,10}$/, "Invalid zip code format"),
+  country: z.string().min(1, "Country is required"),
+  state: z.string().min(1, "State is required"),
+  latitude: z.number(),
+  longitude: z.number(),
+});
+
+export type AddressForm = z.infer<typeof AddressFormSchema>;
+
 export type TUser = {
   id: string;
   last_login: string | null;
@@ -15,7 +35,7 @@ export type TUser = {
 
 export type TAddress = {
   id: string;
-  label: string;
+  label: "home" | "work" | "other";
   street_address: string;
   city: string;
   state: string;
@@ -25,4 +45,7 @@ export type TAddress = {
   longitude: number;
   name: string;
   phone_number: string;
+  area: string;
+  created_at: string;
+  updated_at: string;
 };

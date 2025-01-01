@@ -1,4 +1,7 @@
 import { api } from "@/api";
+import { AddressForm } from "@/types";
+import { capitalize } from "@/utils/text";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -18,41 +21,39 @@ interface AddressDetailsProps {
   city: string;
   state: string;
   country: string;
-  onSubmitSuccess: () => void;
-}
-
-interface AddressForm {
-  label: "home" | "work" | "other";
-  name: string;
-  phone_number: string;
-  street_address: string;
-  area: string;
-  city: string;
-  zip_code: string;
-  country: string;
-  state: string;
+  onSubmit: (fromData: AddressForm) => void;
+  name?: string;
+  zip_code?: string;
+  phone_number?: string;
+  street_address?: string;
 }
 
 const AddressDetailsForm: React.FC<AddressDetailsProps> = ({
   latitude,
   longitude,
   subAddress,
-  onSubmitSuccess,
   city,
   state,
   country,
+  onSubmit,
+  name,
+  zip_code,
+  phone_number,
+  street_address,
 }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<AddressForm>({
     label: "home",
-    street_address: "",
+    street_address: street_address ?? "",
     city: city,
     state: state,
-    zip_code: "",
+    zip_code: zip_code ?? "",
     country: country,
-    name: "",
-    phone_number: "",
+    name: name ?? "",
+    phone_number: phone_number ?? "",
     area: subAddress ?? "",
+    latitude: latitude,
+    longitude: longitude,
   });
 
   const [errors, setErrors] = useState<Partial<AddressForm>>({});
@@ -100,36 +101,10 @@ const AddressDetailsForm: React.FC<AddressDetailsProps> = ({
       return;
     }
 
-    setLoading(true);
-    try {
-      console.log(latitude, longitude);
-      // Replace with your actual API endpoint
-      const response = await api.post("/users/address/create/", {
-        ...formData,
-        latitude,
-        longitude,
-      });
-      onSubmitSuccess();
-    } catch (error) {
-      Alert.alert("Error", "Failed to save address. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    onSubmit(formData);
   };
 
   return (
-    // <View>
-    // <BottomSheet
-    //   index={-1}
-    //   snapPoints={["100%"]}
-    //   enablePanDownToClose={false}
-    //   ref={bottomRef}
-    //   onClose={onClose}
-    //   enableDynamicSizing={false}
-    //   keyboardBlurBehavior="restore"
-    //   keyboardBehavior="fillParent"
-    //   android_keyboardInputMode="adjustPan"
-    // >
     <ScrollView style={styles.container}>
       <Text style={styles.sectionTitle}>Address Type</Text>
       <View style={styles.addressTypeContainer}>
@@ -142,13 +117,25 @@ const AddressDetailsForm: React.FC<AddressDetailsProps> = ({
             ]}
             onPress={() => setFormData({ ...formData, label: type })}
           >
+            <Ionicons
+              name={
+                type === "home"
+                  ? "home"
+                  : type === "work"
+                  ? "business"
+                  : "location"
+              }
+              size={20}
+              color={formData.label === type ? "#FFF" : "#666"}
+            />
+
             <Text
               style={[
                 styles.addressTypeText,
                 formData.label === type && styles.selectedAddressTypeText,
               ]}
             >
-              {type}
+              {capitalize(type)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -234,8 +221,6 @@ const AddressDetailsForm: React.FC<AddressDetailsProps> = ({
         )}
       </TouchableOpacity>
     </ScrollView>
-    // </BottomSheet>
-    // </View>
   );
 };
 
@@ -261,6 +246,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 8,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
   },
   selectedAddressType: {
     backgroundColor: "#007AFF",

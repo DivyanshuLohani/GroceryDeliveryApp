@@ -15,6 +15,7 @@ import useListFetch from "@/hooks/useListFetch";
 import { TAddress } from "@/types";
 import { Colors } from "@/constants/Colors";
 import { capitalize } from "@/utils/text";
+import AddressCard from "@/components/Address/AddressCard";
 
 const DeliveryAddressesScreen = () => {
   const [selectedAddress, setSelectedAddress] = useState(0);
@@ -25,60 +26,6 @@ const DeliveryAddressesScreen = () => {
   } = useListFetch<TAddress>("/users/address/");
   const router = useRouter();
 
-  const AddressCard = ({
-    address,
-    index,
-  }: {
-    address: TAddress;
-    index: number;
-  }) => {
-    const isSelected = selectedAddress === index;
-    const router = useRouter();
-
-    return (
-      <TouchableOpacity
-        style={[styles.addressCard, isSelected && styles.selectedCard]}
-        onPress={() => setSelectedAddress(index)}
-      >
-        <View style={styles.addressHeader}>
-          <View style={styles.typeContainer}>
-            <Ionicons
-              name={
-                address.label === "home"
-                  ? "home"
-                  : address.label === "work"
-                  ? "business"
-                  : "location"
-              }
-              size={20}
-              color={isSelected ? Colors.light.tint : "#666"}
-            />
-            <Text
-              style={[styles.addressType, isSelected && styles.selectedText]}
-            >
-              {capitalize(address.label)}
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => router.push(`/address/edit/${address.id}`)}
-          >
-            <Ionicons name="pencil" size={20} color="#666" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.addressContent}>
-          <Text style={styles.name}>{address.name}</Text>
-          <Text style={styles.addressText}>{address.street_address}</Text>
-          {/* <Text style={styles.addressText}>{address.city}</Text> */}
-          <Text style={styles.addressText}>
-            {address.city}, {address.zip_code}
-          </Text>
-          <Text style={styles.phone}>{address.phone_number}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: true, title: "Your Addresses" }} />
@@ -87,7 +34,13 @@ const DeliveryAddressesScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         {addresses.map((address, index) => (
-          <AddressCard key={address.id} address={address} index={index} />
+          <AddressCard
+            key={address.id}
+            address={address}
+            index={index}
+            selectedAddress={selectedAddress}
+            setSelectedAddress={setSelectedAddress}
+          />
         ))}
       </ScrollView>
       <View style={styles.buttonContainer}>
@@ -114,62 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  addressCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  selectedCard: {
-    borderColor: Colors.light.tint,
-    borderWidth: 2,
-  },
-  addressHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  typeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  addressType: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginLeft: 8,
-    color: "#666",
-  },
-  selectedText: {
-    color: Colors.light.tint,
-  },
-  addressContent: {
-    marginLeft: 28,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-    color: "#333",
-  },
-  addressText: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 2,
-  },
-  phone: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-  },
+
   buttonContainer: {
     position: "absolute",
     bottom: 80,
