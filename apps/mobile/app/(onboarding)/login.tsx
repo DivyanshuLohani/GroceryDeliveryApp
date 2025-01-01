@@ -1,5 +1,6 @@
+import { Colors } from "@/constants/Colors";
 import useAuth from "@/hooks/useAuth";
-import { Link, Stack, useNavigation, useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#FFC107",
+    color: Colors.light.tint,
     marginBottom: 10,
   },
   subtitle: {
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     height: 50,
-    borderColor: "#FFC107",
+    borderColor: Colors.light.tint,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
   loginButton: {
     width: "100%",
     height: 50,
-    backgroundColor: "#FFC107",
+    backgroundColor: Colors.light.tint,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: "#FFC107",
+    color: Colors.light.tint,
   },
   signupContainer: {
     flexDirection: "row",
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   signupLink: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#FFC107",
+    color: Colors.light.tint,
   },
 });
 

@@ -17,36 +17,12 @@ export default function HomeScreen() {
     error,
     hasMore,
   } = useListFetch<TCategory>("/products/categories/");
-  if (loading) return <Loading />;
 
-  // const headerTranslateY = scrollY.interpolate({
-  //   inputRange: [0, 100],
-  //   outputRange: [0, -500],
-  //   extrapolate: "clamp",
-  // });
-  // const searchTranslateY = scrollY.interpolate({
-  //   inputRange: [0, 100],
-  //   outputRange: [0, -80],
-  //   extrapolate: "clamp",
-  // });
-  // const height = scrollY.interpolate({
-  //   inputRange: [0, 100, 200, 300],
-  //   outputRange: [100, 100, 100, 100],
-  //   extrapolate: "clamp",
-  // });
+  if (loading) return <Loading />;
 
   return (
     <SafeAreaView>
       <AddressPopup scrollY={scrollY} />
-      {/* </Animated.View> */}
-      {/* <Animated.View
-        style={[
-          { padding: 16 },
-          { transform: [{ translateY: searchTranslateY }] },
-        ]}
-      >
-        <SearchBar redirect={true} />
-      </Animated.View> */}
 
       <Animated.ScrollView
         style={{ marginBottom: 100 }}

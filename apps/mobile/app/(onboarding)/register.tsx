@@ -23,7 +23,6 @@ const SignupScreen = () => {
         email: email,
         password: password,
       });
-      console.log(response);
       router.replace("/login");
     } catch (error) {
       console.log(error);
