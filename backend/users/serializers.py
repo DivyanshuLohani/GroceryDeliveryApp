@@ -48,6 +48,7 @@ class AddressCreateSerializer(serializers.ModelSerializer):
             'phone_number',
             'latitude',
             'longitude',
+            'area',
         )
 
     def create(self, validated_data):

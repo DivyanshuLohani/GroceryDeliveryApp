@@ -1,7 +1,7 @@
 from rest_framework.views import APIView, Response
 from .serializers import AddressCreateSerializer, UserSerializer, UserRegisterSerializer, AddressSerializer
 from django.contrib.auth import get_user_model
-from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView
+from rest_framework.generics import RetrieveAPIView, CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
 
 # Create your views here.
@@ -42,7 +42,7 @@ class AddressView(ListAPIView):
         return self.request.user.addresses.all()
 
 
-class AddressDetailView(RetrieveAPIView):
+class AddressDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
     lookup_field = "id"
 

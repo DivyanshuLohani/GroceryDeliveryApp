@@ -61,6 +61,7 @@ class Address(BaseModel):
     )
     name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
+    area = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Addresses"
