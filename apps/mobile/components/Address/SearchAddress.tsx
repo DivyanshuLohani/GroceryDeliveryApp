@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Address = () => {
+const SearchAddress = () => {
   return (
     <View>
-      <Text>Address</Text>
+      <Text>SearchAddress</Text>
     </View>
   );
 };
 
-export default Address;
+export default SearchAddress;

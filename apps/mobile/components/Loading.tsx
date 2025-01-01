@@ -16,7 +16,7 @@ const icons: { name: any; color: string }[] = [
   { name: "cafe", color: "#8B4513" },
   { name: "restaurant", color: "#FFB347" },
   { name: "fast-food", color: "#FED049" },
-  { name: "fruit", color: "#77DD77" },
+  // { name: "fruit", color: "#77DD77" },
   { name: "water", color: "#87CEEB" },
 ];
 

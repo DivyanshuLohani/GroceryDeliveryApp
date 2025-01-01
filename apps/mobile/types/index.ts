@@ -14,6 +14,8 @@ export type TUser = {
 };
 
 export type TAddress = {
+  id: string;
+  label: string;
   street_address: string;
   city: string;
   state: string;
@@ -21,4 +23,6 @@ export type TAddress = {
   country: string;
   latitude: number;
   longitude: number;
+  name: string;
+  phone_number: string;
 };

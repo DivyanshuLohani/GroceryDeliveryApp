@@ -11,66 +11,27 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import useListFetch from "@/hooks/useListFetch";
+import { TAddress } from "@/types";
+import { Colors } from "@/constants/Colors";
+import { capitalize } from "@/utils/text";
 
 const DeliveryAddressesScreen = () => {
   const [selectedAddress, setSelectedAddress] = useState(0);
+  const {
+    data: addresses,
+    loading,
+    error,
+  } = useListFetch<TAddress>("/users/address/");
   const router = useRouter();
 
-  // Sample addresses data - in a real app, this would come from an API or storage
-  const addresses = [
-    {
-      id: 1,
-      type: "Home",
-      name: "John Doe",
-      address: "123 Main Street, Apt 4B",
-      area: "Downtown",
-      city: "New York",
-      zipCode: "10001",
-      phone: "+1 234-567-8900",
-    },
-    {
-      id: 2,
-      type: "Work",
-      name: "John Doe",
-      address: "456 Business Ave, Floor 12",
-      area: "Financial District",
-      city: "New York",
-      zipCode: "10005",
-      phone: "+1 234-567-8901",
-    },
-    {
-      id: 3,
-      type: "Other",
-      name: "John Doe",
-      address: "789 Park Road",
-      area: "Central Park",
-      city: "New York",
-      zipCode: "10022",
-      phone: "+1 234-567-8902",
-    },
-    {
-      id: 4,
-      type: "Other",
-      name: "John Doe",
-      address: "789 Park Road",
-      area: "Central Park",
-      city: "New York",
-      zipCode: "10022",
-      phone: "+1 234-567-8902",
-    },
-    {
-      id: 5,
-      type: "Other",
-      name: "John Doe",
-      address: "789 Park Road",
-      area: "Central Park",
-      city: "New York",
-      zipCode: "10022",
-      phone: "+1 234-567-8902",
-    },
-  ];
-
-  const AddressCard = ({ address, index }: { address: any; index: number }) => {
+  const AddressCard = ({
+    address,
+    index,
+  }: {
+    address: TAddress;
+    index: number;
+  }) => {
     const isSelected = selectedAddress === index;
     const router = useRouter();
 
@@ -83,19 +44,19 @@ const DeliveryAddressesScreen = () => {
           <View style={styles.typeContainer}>
             <Ionicons
               name={
-                address.type === "Home"
+                address.label === "home"
                   ? "home"
-                  : address.type === "Work"
+                  : address.label === "work"
                   ? "business"
                   : "location"
               }
               size={20}
-              color={isSelected ? "#FF6B6B" : "#666"}
+              color={isSelected ? Colors.light.tint : "#666"}
             />
             <Text
               style={[styles.addressType, isSelected && styles.selectedText]}
             >
-              {address.type}
+              {capitalize(address.label)}
             </Text>
           </View>
           <TouchableOpacity
@@ -107,12 +68,12 @@ const DeliveryAddressesScreen = () => {
 
         <View style={styles.addressContent}>
           <Text style={styles.name}>{address.name}</Text>
-          <Text style={styles.addressText}>{address.address}</Text>
-          <Text style={styles.addressText}>{address.area}</Text>
+          <Text style={styles.addressText}>{address.street_address}</Text>
+          {/* <Text style={styles.addressText}>{address.city}</Text> */}
           <Text style={styles.addressText}>
-            {address.city}, {address.zipCode}
+            {address.city}, {address.zip_code}
           </Text>
-          <Text style={styles.phone}>{address.phone}</Text>
+          <Text style={styles.phone}>{address.phone_number}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -132,10 +93,7 @@ const DeliveryAddressesScreen = () => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => {
-            router.push("/address/new");
-            console.log("Redirect");
-          }}
+          onPress={() => router.push("/address/new")}
         >
           <Ionicons name="add" size={24} color="#FFF" />
           <Text style={styles.addButtonText}>Add New Address</Text>
@@ -171,7 +129,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   selectedCard: {
-    borderColor: "#FF6B6B",
+    borderColor: Colors.light.tint,
     borderWidth: 2,
   },
   addressHeader: {
@@ -191,7 +149,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   selectedText: {
-    color: "#FF6B6B",
+    color: Colors.light.tint,
   },
   addressContent: {
     marginLeft: 28,
@@ -227,7 +185,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FF6B6B",
+    backgroundColor: Colors.light.tint,
     margin: 16,
     padding: 16,
     borderRadius: 12,
