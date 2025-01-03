@@ -18,6 +18,7 @@ type AddressAction =
 interface AddressContextType extends AddressState {
   selectedAddress: TAddress | null;
   setSelectedAddress: (address: TAddress) => Promise<void>;
+  loadAddresses: () => Promise<void>;
   clearAddresses: () => void;
 }
 
@@ -105,6 +106,7 @@ export function AddressProvider({ children }: { children: React.ReactNode }) {
       value={{
         addresses: state.addresses,
         selectedAddress: state.selectedAddress,
+        loadAddresses,
         setSelectedAddress,
         clearAddresses,
       }}

@@ -2,8 +2,14 @@ import { Colors } from "@/constants/Colors";
 import useAuth from "@/hooks/useAuth";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+// import { TouchableOpacity } from "react-native-gesture-handler";
 
 const LoginScreen = () => {
   const { login } = useAuth();
