@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'admin_panel',
+    'common',
     'delivery',
     'notifications',
     'orders',
@@ -166,3 +167,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # TESTING
 ARTIFICIAL_DELAY = 0 if DEBUG else 0
+
+
+# KAFKA
+KAFKA_HOST = os.environ.get("KAFKA_HOST")
+KAFKA_DELIVERY_GROUP = "realtime_location"
+KAFKA_DRIVER_LOCATION = "driver_location"
+KAFKA_ORDER_COMPLETE_TOPIC = "order_complete"
+KAFKA_ORDER_CREATED = "order_created"

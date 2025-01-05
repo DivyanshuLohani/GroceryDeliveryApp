@@ -5,6 +5,17 @@ from .serializers import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from confluent_kafka import Producer
+from delivery.models import DeliveryPartner
+from django.conf import settings
+
+producer = Producer({'bootstrap.servers': settings.KAFKA_HOST})
+
+
+def send_order_created_event(order_id, order_data):
+    producer.produce(settings.KAFKA_ORDER_CREATED,
+                     key=order_id, value=str(order_data))
+    producer.flush()
 
 
 class OrderListView(generics.ListCreateAPIView):
@@ -27,6 +38,18 @@ class OrderListView(generics.ListCreateAPIView):
         if request.user.is_staff or request.user.is_superuser or request.user == obj.user:
             return True
         return False
+
+    def perform_create(self, serializer):
+        o = serializer.save()
+        partner = DeliveryPartner.objects.filter(
+            city=o.address.city, on_duty=False
+        ).first()
+        if partner:
+            o.assigned_partner = partner
+            partner.on_duty = True
+            partner.save()
+        send_order_created_event(o.id, serializer.data)
+        return o
 
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):

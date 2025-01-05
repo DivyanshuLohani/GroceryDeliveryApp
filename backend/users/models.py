@@ -1,10 +1,28 @@
+from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
 from common.models import BaseModel
 
 
+class UserManager(BaseUserManager):
+
+    def create_superuser(self, email, password, **extra_fields):
+        user = self.model(email=email, **extra_fields)
+        user.is_superuser = True
+        user.is_staff = True
+        user.set_password(password)
+        user.save(using=self.db)
+        return user
+
+    def create(self, **kwargs: Any) -> Any:
+        password = kwargs.pop("password")
+        self.set_password(password)
+        return super().create(**kwargs)
+
+
 class User(BaseModel, AbstractUser):
+    objects = UserManager()
     USER_TYPE_CHOICES = (
         ('customer', 'Customer'),
         ('delivery_partner', 'Delivery Partner'),

@@ -1,0 +1,136 @@
+{% extends "admin/base_site.html" %} {% block content %}
+<h1>Manage Images for {{ product.name }}</h1>
+<form id="image-reorder-form" method="post">
+  {% csrf_token %}
+  <table id="sortable" style="width: 100%; border-collapse: collapse">
+    <thead>
+      <tr>
+        <th
+          style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd"
+        >
+          Priority
+        </th>
+        <th
+          style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd"
+        >
+          Image
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for image in images %}
+      <tr data-id="{{ image.id }}" draggable="true" style="cursor: move">
+        <td style="padding: 10px; border-bottom: 1px solid #ddd">
+          {{ image.priority }}
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd">
+          <img src="{{ image.modified_url }}" style="max-height: 100px" />
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="button">Save Order</button>
+</form>
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  tbody tr {
+    cursor: move;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sortable = document.querySelector("#sortable tbody");
+
+    let draggedRow = null;
+
+    Array.from(sortable.children).forEach((row) => {
+      row.addEventListener("dragstart", function () {
+        draggedRow = this;
+        setTimeout(() => (this.style.display = "none"), 0);
+      });
+
+      row.addEventListener("dragend", function () {
+        setTimeout(() => {
+          this.style.display = "table-row";
+          draggedRow = null;
+        }, 0);
+      });
+
+      row.addEventListener("dragover", function (e) {
+        e.preventDefault();
+      });
+
+      row.addEventListener("dragenter", function (e) {
+        e.preventDefault();
+        this.style.border = "2px dashed #ccc";
+      });
+
+      row.addEventListener("dragleave", function () {
+        this.style.border = "";
+      });
+
+      row.addEventListener("drop", function () {
+        this.style.border = "";
+        if (draggedRow !== this) {
+          const children = Array.from(sortable.children);
+          const draggedIndex = children.indexOf(draggedRow);
+          const targetIndex = children.indexOf(this);
+
+          if (draggedIndex > targetIndex) {
+            sortable.insertBefore(draggedRow, this);
+          } else {
+            sortable.insertBefore(draggedRow, this.nextSibling);
+          }
+        }
+      });
+    });
+
+    document
+      .getElementById("sortable")
+      .addEventListener("dragend", function () {
+        const sortedIds = Array.from(
+          document.querySelectorAll("#sortable tbody tr")
+        ).map((row) => row.getAttribute("data-id"));
+
+        fetch(window.location.href, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
+              .value,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ids: sortedIds }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              alert("Sorting updated successfully!");
+            } else {
+              alert("Error updating sorting.");
+            }
+          })
+          .catch((err) => {
+            alert("Request failed.");
+          });
+      });
+  });
+</script>
+{% endblock %}

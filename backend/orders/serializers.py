@@ -69,6 +69,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 # Order Create Serializer
 class OrderCreateSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
     status = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     order_items = OrderItemCreateSerializer(many=True)
@@ -86,7 +87,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['status',
+        fields = ['id', 'status',
                   'address',
                   'order_items', 'created_at']
 

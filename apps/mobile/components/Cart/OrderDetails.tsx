@@ -19,6 +19,7 @@ const OrderDetails = ({ onClose }: OrderDetailsProps) => {
   const handleOrder = async () => {
     try {
       await api.post("/orders/order/", {
+        address: selectedAddress?.id,
         order_items: items.map((item) => ({
           product: item.product.id,
           quantity: item.quantity,
@@ -26,7 +27,8 @@ const OrderDetails = ({ onClose }: OrderDetailsProps) => {
       });
       Alert.alert("Order placed successfully");
       await clearCart();
-    } catch {
+    } catch (error) {
+      // console.log(error.response.data);
       console.log("error placing order");
     }
   };

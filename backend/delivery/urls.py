@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Example URL
-    # path('', views.YourView.as_view(), name='your-view'),
+    path('<str:order_id>/location/',
+         views.DriverLocationAPIView.as_view(), name='delivery-location-update'),
 ]

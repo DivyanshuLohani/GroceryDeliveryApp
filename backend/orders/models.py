@@ -59,18 +59,18 @@ class Order(BaseModel):
     discount = models.FloatField(default=0.0)
 
     assigned_partner = models.ForeignKey(
-        'users.User',
+        'delivery.DeliveryPartner',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='assigned_partner'
+        related_name='orders'
     )
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Order {self.id} by {self.user}"
+        return f"Order {self.id} by {self.user} assigned to {self.assigned_partner}"
 
 
 # OrderItem Model
