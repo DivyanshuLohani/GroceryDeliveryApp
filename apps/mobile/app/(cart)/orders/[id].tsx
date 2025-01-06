@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import useFetch from "@/hooks/useFetch";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { TOrder } from "@/types/cart";
 import { formatCurrency } from "@/utils/currency";
 import { getStatusColor } from "@/utils/color";
@@ -12,6 +13,7 @@ import PriceDetails from "@/components/Order/PriceDetails";
 import ErrorPage from "@/components/Error";
 import LoadingScreen from "@/components/Loading";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OrderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -35,13 +37,12 @@ export default function OrderDetailScreen() {
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorPage />;
-
   if (!order) return null;
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: true, title: "" }} />
-      <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <Stack.Screen options={{ headerShown: true, title: "Order Summary" }} />
         {/* Order Status Header */}
         <View style={styles.header}>
           <View style={styles.orderInfo}>
@@ -122,27 +123,36 @@ export default function OrderDetailScreen() {
 
         {/* Action Buttons */}
         <View style={styles.actions}>
-          {order.status === "Delivered" && (
+          {order.status === "Delivered" ? (
             <TouchableOpacity style={styles.reorderButton}>
               <Ionicons name="reload-outline" size={20} color="#4CAF50" />
               <Text style={styles.reorderText}>Reorder</Text>
             </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.reorderButton}
+              onPress={() => router.push(`/orders/${id}/track`)}
+            >
+              <Ionicons name="location-outline" size={20} color="#4CAF50" />
+              <Text style={styles.reorderText}>Track Order</Text>
+            </TouchableOpacity>
           )}
+
           <TouchableOpacity style={styles.supportButton}>
             <Ionicons name="chatbubble-outline" size={20} color="#1A1A1A" />
             <Text style={styles.supportText}>Need Help?</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 20,
+    flex: 1,
+    paddingBottom: 100,
   },
   header: {
     padding: 16,

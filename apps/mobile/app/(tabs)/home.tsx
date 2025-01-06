@@ -7,6 +7,7 @@ import CategoryGrid from "@/components/Category/CategoryGrid";
 import useListFetch from "@/hooks/useListFetch";
 import Loading from "@/components/Loading";
 import { TCategory } from "@/types/category";
+import ErrorComponent from "@/components/Error";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -19,6 +20,11 @@ export default function HomeScreen() {
   } = useListFetch<TCategory>("/products/categories/");
 
   if (loading) return <Loading />;
+
+  if (error)
+    return (
+      <ErrorComponent message="Oops! Something went wrong while fetching categories" />
+    );
 
   return (
     <SafeAreaView>

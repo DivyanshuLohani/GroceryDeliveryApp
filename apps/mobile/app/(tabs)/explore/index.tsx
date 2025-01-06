@@ -14,6 +14,7 @@ import { TCategory } from "@/types/category";
 import Loading from "@/components/Loading";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import CategoryItem from "@/components/Category/CategoryItem";
+import ErrorComponent from "@/components/Error";
 
 const ProductCategories = () => {
   const router = useRouter();
@@ -27,6 +28,9 @@ const ProductCategories = () => {
     if (!categories) return [];
     return categories.flatMap((parent) => parent.subcategories);
   }, [categories]);
+
+  if (error) return <ErrorComponent />;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Find Products</Text>

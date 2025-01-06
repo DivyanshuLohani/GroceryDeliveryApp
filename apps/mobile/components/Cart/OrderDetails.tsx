@@ -7,6 +7,7 @@ import { useCart } from "@/hooks/useCart";
 import { Colors } from "@/constants/Colors";
 import { api } from "@/api";
 import { useAddress } from "@/hooks/useAddress";
+import { useRouter } from "expo-router";
 
 interface OrderDetailsProps {
   onClose: () => void;
@@ -15,17 +16,20 @@ interface OrderDetailsProps {
 const OrderDetails = ({ onClose }: OrderDetailsProps) => {
   const { total, items, clearCart } = useCart();
   const { selectedAddress } = useAddress();
+  const router = useRouter();
 
   const handleOrder = async () => {
     try {
-      await api.post("/orders/order/", {
+      const response = await api.post("/orders/order/", {
         address: selectedAddress?.id,
         order_items: items.map((item) => ({
           product: item.product.id,
           quantity: item.quantity,
         })),
       });
-      Alert.alert("Order placed successfully");
+      if (response.data) {
+        router.push(`/orders/${response.data.id}/track`);
+      }
       await clearCart();
     } catch (error) {
       // console.log(error.response.data);

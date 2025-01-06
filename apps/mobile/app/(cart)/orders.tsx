@@ -5,6 +5,7 @@ import { TOrder } from "@/types/cart";
 import OrderCard from "@/components/Cart/OrderCard";
 import Loading from "@/components/Loading";
 import { Stack } from "expo-router";
+import ErrorComponent from "@/components/Error";
 
 export default function OrdersScreen() {
   const {
@@ -13,7 +14,7 @@ export default function OrdersScreen() {
     error,
   } = useListFetch<TOrder>("/orders/order");
   if (loading) return <Loading />;
-  if (error) return <Text>Error</Text>;
+  if (error) return <ErrorComponent />;
   return (
     <>
       <Stack.Screen options={{ headerShown: true, title: "Your Orders" }} />
@@ -23,6 +24,7 @@ export default function OrdersScreen() {
         <ScrollView
           style={styles.ordersContainer}
           showsVerticalScrollIndicator={false}
+          nestedScrollEnabled
         >
           {orders.map((o) => (
             <OrderCard key={o.id} order={o} />

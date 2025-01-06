@@ -6,12 +6,8 @@ import ProductList from "@/components/Products/ProductList";
 import useListFetch from "@/hooks/useListFetch";
 import { TProduct } from "@/types/product";
 import Loading from "@/components/Loading";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity } from "react-native";
-import { Colors } from "@/constants/Colors";
 import NoProductsFound from "@/components/Products/NoProductsFound";
+import ErrorComponent from "@/components/Error";
 
 const SearchPage = () => {
   const { query } = useLocalSearchParams<{ query: string }>();
@@ -24,6 +20,8 @@ const SearchPage = () => {
   } = useListFetch<TProduct>(`/products/search/${query}`);
 
   if (loading) return <Loading />;
+
+  if (error) return <ErrorComponent />;
 
   return (
     <>

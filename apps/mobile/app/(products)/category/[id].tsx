@@ -1,3 +1,4 @@
+import ErrorComponent from "@/components/Error";
 import Loading from "@/components/Loading";
 import ProductList from "@/components/Products/ProductList";
 import useListFetch from "@/hooks/useListFetch";
@@ -24,6 +25,11 @@ export default function ProductScreen() {
   }, [navigation, loading]);
 
   if (loading) return <Loading />;
+
+  if (error)
+    return (
+      <ErrorComponent message="Oops! Something went wrong while fetching products" />
+    );
 
   return <ProductList products={products} />;
 }
