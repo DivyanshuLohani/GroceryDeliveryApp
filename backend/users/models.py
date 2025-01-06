@@ -1,11 +1,11 @@
 from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, UserManager as UM
 from django.conf import settings
 from common.models import BaseModel
 
 
-class UserManager(BaseUserManager):
+class UserManager(UM):
 
     def create_superuser(self, email, password, **extra_fields):
         user = self.model(email=email, **extra_fields)
@@ -15,10 +15,19 @@ class UserManager(BaseUserManager):
         user.save(using=self.db)
         return user
 
-    def create(self, **kwargs: Any) -> Any:
-        password = kwargs.pop("password")
-        self.set_password(password)
-        return super().create(**kwargs)
+    def create_user(self, email, password=None, **extra_fields):
+        """Create and return a regular user."""
+        if not email:
+            raise ValueError("The Email field must be set.")
+        email = self.normalize_email(email)
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        model = self.model.objects.create(
+            email=email, password=password, **extra_fields
+        )
+        model.set_password(password)
+        model.save()
+        return model
 
 
 class User(BaseModel, AbstractUser):

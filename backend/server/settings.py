@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'channels',
     'admin_panel',
     'common',
     'delivery',
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     'orders',
     'products',
     'users',
-
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,6 +77,16 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': os.getenv("DB_HOST"),
         'PORT': os.getenv("DB_PORT"),
+    }
+}
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "grocery_delivery"
     }
 }
 AUTH_PASSWORD_VALIDATORS = [
@@ -159,6 +169,10 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+CHANNEL_LAYERS = {
+    "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
+}
+
 
 PHONE_NUMBER_VERIFICATION = False
 
@@ -167,11 +181,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # TESTING
 ARTIFICIAL_DELAY = 0 if DEBUG else 0
-
-
-# KAFKA
-KAFKA_HOST = os.environ.get("KAFKA_HOST")
-KAFKA_DELIVERY_GROUP = "realtime_location"
-KAFKA_DRIVER_LOCATION = "driver_location"
-KAFKA_ORDER_COMPLETE_TOPIC = "order_complete"
-KAFKA_ORDER_CREATED = "order_created"
