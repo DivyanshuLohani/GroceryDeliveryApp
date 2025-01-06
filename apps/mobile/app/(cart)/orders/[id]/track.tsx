@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Dimensions, Animated } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import useFetch from "@/hooks/useFetch";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import LoadingScreen from "@/components/Loading";
 import ErrorComponent from "@/components/Error";
 import { EOrderStatus } from "@/types/cart";
@@ -11,7 +11,7 @@ import { TOrderStatus } from "@/types/order";
 import TrackingStep from "@/components/Order/TrackingStep";
 import { ScrollView } from "react-native-gesture-handler";
 
-const FETCH_INTERVAL = 5000; // 1 * 60 * 1000; // 1 minute in milliseconds
+const FETCH_INTERVAL = 1 * 60 * 1000; // 1 minute in milliseconds
 
 const OrderTrackingScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -109,86 +109,91 @@ const OrderTrackingScreen = () => {
   }
 
   return (
-    <ScrollView style={styles.container} bounces={false}>
-      {/* Map Section */}
-      <View style={styles.mapContainer}>
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          region={region}
-          showsUserLocation={false}
-          ref={mapRef}
-        >
-          {/* Driver Marker */}
-          <Marker coordinate={driverLocation}>
-            <View style={styles.driverMarker}>
-              <Ionicons name="car" size={20} color="#007AFF" />
+    <View style={styles.container}>
+      <Stack.Screen
+        options={{ headerShown: true, title: "Track your order" }}
+      />
+      <ScrollView bounces={false}>
+        {/* Map Section */}
+        <View style={styles.mapContainer}>
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            region={region}
+            showsUserLocation={false}
+            ref={mapRef}
+          >
+            {/* Driver Marker */}
+            <Marker coordinate={driverLocation}>
+              <View style={styles.driverMarker}>
+                <Ionicons name="car" size={20} color="#007AFF" />
+              </View>
+            </Marker>
+
+            {/* Delivery Location Marker */}
+            <Marker coordinate={region}>
+              <View style={styles.destinationMarker}>
+                <Ionicons name="location" size={20} color="#FF3B30" />
+              </View>
+            </Marker>
+          </MapView>
+
+          {/* Heartbeat Overlay */}
+          <Animated.View
+            style={[
+              styles.heartbeatOverlay,
+              {
+                opacity: pulseAnim,
+              },
+            ]}
+            pointerEvents={"none"}
+          />
+
+          {/* Driver Info Overlay */}
+          <View style={styles.driverInfo}>
+            <View style={styles.driverAvatar}>
+              <Ionicons name="person" size={24} color="#007AFF" />
             </View>
-          </Marker>
-
-          {/* Delivery Location Marker */}
-          <Marker coordinate={region}>
-            <View style={styles.destinationMarker}>
-              <Ionicons name="location" size={20} color="#FF3B30" />
+            <View style={styles.driverDetails}>
+              <Text style={styles.driverName}>
+                {order.assigned_partner?.name}
+              </Text>
+              <Text style={styles.vehicleInfo}>
+                {order.assigned_partner?.contact_no}
+              </Text>
             </View>
-          </Marker>
-        </MapView>
-
-        {/* Heartbeat Overlay */}
-        <Animated.View
-          style={[
-            styles.heartbeatOverlay,
-            {
-              opacity: pulseAnim,
-            },
-          ]}
-          pointerEvents={"none"}
-        />
-
-        {/* Driver Info Overlay */}
-        <View style={styles.driverInfo}>
-          <View style={styles.driverAvatar}>
-            <Ionicons name="person" size={24} color="#007AFF" />
-          </View>
-          <View style={styles.driverDetails}>
-            <Text style={styles.driverName}>
-              {order.assigned_partner?.name}
-            </Text>
-            <Text style={styles.vehicleInfo}>
-              {order.assigned_partner?.contact_no}
-            </Text>
           </View>
         </View>
-      </View>
 
-      {/* Order Details Section */}
-      <View style={styles.detailsContainer}>
-        <View style={styles.orderHeader}>
-          <Text style={styles.orderId}>Order {id}</Text>
-          <Text style={styles.eta}></Text>
-        </View>
+        {/* Order Details Section */}
+        <View style={styles.detailsContainer}>
+          <View style={styles.orderHeader}>
+            <Text style={styles.orderId}>Order {id}</Text>
+            <Text style={styles.eta}></Text>
+          </View>
 
-        <View style={styles.trackingContainer}>
-          <TrackingStep
-            title="Order Confirmed"
-            completed={order.status === EOrderStatus.Pending}
-          />
-          <TrackingStep
-            title="Order Picked"
-            completed={order.status === EOrderStatus.Processing}
-          />
-          <TrackingStep
-            title="On the Way"
-            completed={order.status === EOrderStatus.OnTheWay}
-          />
-          <TrackingStep
-            title="Delivered"
-            completed={order.status === EOrderStatus.Delivered}
-            last
-          />
+          <View style={styles.trackingContainer}>
+            <TrackingStep
+              title="Order Confirmed"
+              completed={order.status === EOrderStatus.Pending}
+            />
+            <TrackingStep
+              title="Order Picked"
+              completed={order.status === EOrderStatus.Processing}
+            />
+            <TrackingStep
+              title="On the Way"
+              completed={order.status === EOrderStatus.OnTheWay}
+            />
+            <TrackingStep
+              title="Delivered"
+              completed={order.status === EOrderStatus.Delivered}
+              last
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -196,6 +201,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+    paddingTop: 0,
+    marginTop: 0,
   },
   mapContainer: {
     height: Dimensions.get("window").height * 0.6,

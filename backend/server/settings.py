@@ -89,6 +89,7 @@ CACHES = {
         "KEY_PREFIX": "grocery_delivery"
     }
 }
+CACHE_TTL = 60 * 60 * 2  # 2 hours
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

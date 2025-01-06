@@ -1,3 +1,7 @@
+from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_cookie, vary_on_headers
+from django.views.decorators.cache import cache_page
 from products.serializers import CategorySerializer
 from products.models import Category
 from rest_framework.generics import ListAPIView
@@ -11,7 +15,6 @@ from rest_framework import status
 from .models import Category, Product, ProductImage, ProductReview
 from .serializers import (
     CategoryCreateSerializer,
-    CategoryDetailSerializer,
     CategorySerializer,
     ProductCreateSerializer,
     ProductImageCreateSerializer,
@@ -61,11 +64,14 @@ class ProductReviewCreateView(CreateAPIView):
 
 # View all Categories
 
-
 class CategoryListView(ListAPIView):
     queryset = Category.objects.filter(parent_category__isnull=True)
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
+
+    @method_decorator(cache_page(settings.CACHE_TTL))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 # View a single Category
@@ -77,6 +83,10 @@ class CategoryDetailView(ListAPIView):
     def get_queryset(self):
         cat_id = self.kwargs['id']
         return Product.objects.filter(category__id=cat_id)
+
+    @method_decorator(cache_page(settings.CACHE_TTL))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 # View all Products
@@ -90,6 +100,10 @@ class ProductListView(ListAPIView):
         query = self.kwargs['query']
         return Product.objects.filter(name__icontains=query)
 
+    @method_decorator(cache_page(settings.CACHE_TTL))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 # View a single Product
 class ProductDetailView(RetrieveAPIView):
@@ -97,6 +111,10 @@ class ProductDetailView(RetrieveAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     lookup_field = 'id'  # Use the primary key or customize as needed
+
+    @method_decorator(cache_page(settings.CACHE_TTL))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 # View all Reviews for a Product
@@ -107,3 +125,7 @@ class ProductReviewListView(ListAPIView):
     def get_queryset(self):
         product_id = self.kwargs['product_id']
         return ProductReview.objects.filter(product__id=product_id)
+
+    @method_decorator(cache_page(settings.CACHE_TTL))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
