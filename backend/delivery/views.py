@@ -70,6 +70,19 @@ class DriverLocationAPIView(APIView):
 
         if dat := cache.cache.get(order_id):
             return Response(dat, status=200)
+        else:
+            order = Order.objects.get(id=order_id)
+            data = {
+                "order_id": order.id,
+                "status": order.status,
+                "assigned_partner": DeliveryPartnerSerializer(order.assigned_partner).data,
+                "address": AddressSerializer(order.address).data,
+                "latitude": None,
+                "longitude": None
+            }
+            cache.cache.set(order_id, data, timeout=LOCATION_DATA_EXPIRY)
+            return Response(data, status=200)
+
         return Response({"error": "Location not found"}, status=404)
 
     def post(self, request, order_id):
