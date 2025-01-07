@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics, status
 from .models import CartItem, Order
 from .serializers import (
@@ -5,7 +6,7 @@ from .serializers import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from delivery.models import DeliveryPartner
+from rest_framework.exceptions import NotFound
 
 
 class OrderListView(generics.ListCreateAPIView):
@@ -98,10 +99,35 @@ class ModifyCartItemView(generics.UpdateAPIView, generics.DestroyAPIView):
 
         # May raise a permission denied
         self.check_object_permissions(self.request, obj)
-
         return obj
 
     def check_object_permissions(self, request, obj):
         if request.user == obj.user:
+            return True
+        return False
+
+
+class PendingOrderView(generics.RetrieveAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(
+            ~Q(status="Delivered"), user=self.request.user
+        )
+
+    def get_object(self):
+        obj = self.get_queryset().first()
+        if not obj:
+            raise NotFound()
+
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def check_object_permissions(self, request, obj):
+        if not obj or obj is None:
+            return False
+        if request.user.is_staff or request.user.is_superuser or request.user == obj.user:
             return True
         return False

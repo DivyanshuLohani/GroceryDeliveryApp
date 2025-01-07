@@ -92,6 +92,7 @@ class Address(BaseModel):
 
     class Meta:
         verbose_name_plural = "Addresses"
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.label.title()} - {self.city}, {self.state}"
