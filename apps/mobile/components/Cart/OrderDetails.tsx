@@ -8,6 +8,7 @@ import { Colors } from "@/constants/Colors";
 import { api } from "@/api";
 import { useAddress } from "@/hooks/useAddress";
 import { useRouter } from "expo-router";
+import { usePaymentMethod } from "@/context/PaymentProvider";
 
 interface OrderDetailsProps {
   onClose: () => void;
@@ -16,11 +17,13 @@ interface OrderDetailsProps {
 const OrderDetails = ({ onClose }: OrderDetailsProps) => {
   const { total, items, clearCart } = useCart();
   const { selectedAddress } = useAddress();
+  const { paymentMethod } = usePaymentMethod();
   const router = useRouter();
 
   const handleOrder = async () => {
     try {
       const response = await api.post("/orders/order/", {
+        payment: paymentMethod,
         address: selectedAddress?.id,
         order_items: items.map((item) => ({
           product: item.product.id,
@@ -47,14 +50,22 @@ const OrderDetails = ({ onClose }: OrderDetailsProps) => {
       </View>
       <View style={styles.contentContainer}>
         <Text style={styles.contentText}>Payment Method</Text>
-        <TouchableOpacity style={styles.contentAction}>
-          <Text style={styles.contentText}>Method</Text>
+        <TouchableOpacity
+          style={styles.contentAction}
+          onPress={() => router.push("/payment-methods")}
+        >
+          <Text style={styles.contentText}>
+            {paymentMethod?.method ?? "Not Selected"}
+          </Text>
           <Ionicons name="chevron-forward-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.contentContainer}>
         <Text style={styles.contentText}>Promo Code</Text>
-        <TouchableOpacity style={styles.contentAction}>
+        <TouchableOpacity
+          style={styles.contentAction}
+          onPress={() => router.push("/promo-codes")}
+        >
           <Text style={styles.contentText}>Select</Text>
           <Ionicons name="chevron-forward-outline" size={24} color="black" />
         </TouchableOpacity>

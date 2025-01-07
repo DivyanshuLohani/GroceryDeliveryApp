@@ -1,4 +1,5 @@
 import { TAddress } from ".";
+import { TPaymentMethod } from "./order";
 import { TProduct } from "./product";
 
 export enum EOrderStatus {
@@ -26,6 +27,6 @@ export type TOrder = {
   total_amount: number;
   status: EOrderStatus;
   order_items: TOrderItem[];
-  payment: any | null; // Define this properly if the payment structure is known
+  payment: TPaymentMethod | null; // Define this properly if the payment structure is known
   discount: number;
 };

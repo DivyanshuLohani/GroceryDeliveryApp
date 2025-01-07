@@ -116,10 +116,12 @@ export default function OrderDetailScreen() {
         )}
 
         {/* Payment Method */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment Method</Text>
-          <PaymentDetails payment={{ method: "Card", last4: "1234" }} />
-        </View>
+        {order.payment && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Payment Method</Text>
+            <PaymentDetails payment={order.payment} />
+          </View>
+        )}
 
         {/* Action Buttons */}
         <View style={styles.actions}>

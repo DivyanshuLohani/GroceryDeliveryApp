@@ -1,68 +1,29 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-
-type Payment =
-  | {
-      method: "Card";
-      last4: string; // Required for Card
-      upiId?: never;
-      bankName?: never;
-    }
-  | {
-      method: "UPI";
-      upiId: string; // Required for UPI
-      last4?: never;
-      bankName?: never;
-    }
-  | {
-      method: "Net Banking";
-      bankName: string; // Required for Net Banking
-      last4?: never;
-      upiId?: never;
-    }
-  | {
-      method: "Cash on Delivery";
-      last4?: never;
-      upiId?: never;
-      bankName?: never;
-    };
+import { EPaymentMethod, TPaymentMethod } from "@/types/order";
+import { renderIcon } from "./PaymentRender";
 
 interface PaymentDetailsProps {
-  payment: Payment;
+  payment: TPaymentMethod;
 }
 
 const PaymentDetails = ({ payment }: PaymentDetailsProps) => {
-  const getIcon = () => {
-    switch (payment.method) {
-      case "Card":
-        return "card-outline";
-      case "UPI":
-        return "logo-usd";
-      case "Net Banking":
-        return "cash-outline";
-      case "Cash on Delivery":
-        return "wallet-outline";
-      default:
-        return "card-outline";
-    }
-  };
-
   return (
     <View style={styles.paymentCard}>
-      <Ionicons name={getIcon()} size={24} color="#666" />
+      {renderIcon(payment.method)}
       <View style={styles.paymentInfo}>
         <Text style={styles.paymentMethod}>{payment.method}</Text>
-        {payment.method === "Card" && (
+        {payment.method === EPaymentMethod.Card && (
           <Text style={styles.paymentDetail}>**** {payment.last4}</Text>
         )}
-        {payment.method === "UPI" && (
+        {payment.method === EPaymentMethod.UPI && (
           <Text style={styles.paymentDetail}>{payment.upiId}</Text>
         )}
-        {payment.method === "Net Banking" && (
+        {payment.method === EPaymentMethod.NetBanking && (
           <Text style={styles.paymentDetail}>{payment.bankName}</Text>
         )}
-        {payment.method === "Cash on Delivery" && (
+        {payment.method === EPaymentMethod.CashOnDelivery && (
           <Text style={styles.paymentDetail}>Cash on Delivery</Text>
         )}
       </View>

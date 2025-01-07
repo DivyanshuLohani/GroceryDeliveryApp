@@ -5,12 +5,10 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import AuthProvider from "@/context/AuthProvider";
 import React, { useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { CartProvider } from "@/context/CartProvider";
-import { AddressProvider } from "@/context/AddressProvider";
+import Providers from "@/components/Providers";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,13 +27,9 @@ export default function RootLayout() {
   return (
     // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
     <GestureHandlerRootView>
-      <AuthProvider onAuthChanged={() => {}}>
-        <CartProvider>
-          <AddressProvider>
-            <LayoutMain />
-          </AddressProvider>
-        </CartProvider>
-      </AuthProvider>
+      <Providers>
+        <LayoutMain />
+      </Providers>
     </GestureHandlerRootView>
     // </ThemeProvider>
   );

@@ -8,6 +8,9 @@ import useListFetch from "@/hooks/useListFetch";
 import Loading from "@/components/Loading";
 import { TCategory } from "@/types/category";
 import ErrorComponent from "@/components/Error";
+import useFetch from "@/hooks/useFetch";
+import { TOrder } from "@/types/cart";
+import PendingOrderTracking from "@/components/Order/PendingOrderTracking";
 
 export default function HomeScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -16,8 +19,9 @@ export default function HomeScreen() {
     data: category,
     loading,
     error,
-    hasMore,
   } = useListFetch<TCategory>("/products/categories/");
+
+  const { data: pendingOrder } = useFetch<TOrder>("/orders/recent/");
 
   if (loading) return <Loading />;
 
@@ -39,7 +43,7 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <PromoBanner />
-
+        {pendingOrder && <PendingOrderTracking order={pendingOrder} />}
         {!loading &&
           category &&
           category.map(
@@ -58,12 +62,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: "row",
-    alignContent: "center",
-    justifyContent: "center",
-    // paddingBottom: 20,
-  },
-});
